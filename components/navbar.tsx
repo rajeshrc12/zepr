@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "@/components/logo";
 import { NAVBAR_MENU } from "@/contants/dashboard";
 import Profile from "@/components/profile";
-import ActiveLink from "./active-link";
+import ActiveLink from "@/components/active-link";
 
 const Navbar = () => {
   return (
