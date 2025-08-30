@@ -11,12 +11,12 @@ interface ActiveLinkProps {
 
 export default function ActiveLink({ href, name }: ActiveLinkProps) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname.includes(href);
   return (
     <Link href={href} passHref>
       <Button
         key={name}
-        className={cn("font-semibold text-md", isActive && "shadow-lg")}
+        className={cn("font-semibold", isActive && "shadow-lg")}
         variant={isActive ? "outline" : "ghost"}
       >
         {name}
