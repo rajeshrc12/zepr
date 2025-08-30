@@ -67,7 +67,7 @@ const CustomBarChart = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="pv" fill="#8884d8" />
+          <Bar dataKey="pv" fill="#201e1c" />
         </BarChart>
       </ResponsiveContainer>
     </div>

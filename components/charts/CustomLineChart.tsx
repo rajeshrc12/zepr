@@ -67,7 +67,7 @@ const CustomLineChart = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="pv" stroke="#201e1c" />
         </LineChart>
       </ResponsiveContainer>
     </div>
