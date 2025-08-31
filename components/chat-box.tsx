@@ -31,7 +31,15 @@ const ChatBox = () => {
         ],
       };
     });
-    await axios.post("/api/message", { chatId, message });
+    const chatData = queryClient.getQueryData(["chat", chatId]) as Chat & {
+      messages: Message[];
+    };
+    console.log(chatData);
+    await axios.post("/api/message", {
+      chatId,
+      message,
+      messages: chatData?.messages,
+    });
 
     queryClient.invalidateQueries({ queryKey: ["chat"] });
   };

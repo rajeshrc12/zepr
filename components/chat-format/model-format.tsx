@@ -1,15 +1,16 @@
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FaChartBar, FaTable } from "react-icons/fa";
-import SQLFormat from "@/components/chat-format/sql-format";
-import ChartFormat from "./chart-format";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { FaChartBar, FaTable } from "react-icons/fa";
+// import SQLFormat from "@/components/chat-format/sql-format";
+// import ChartFormat from "./chart-format";
 
 const ModelFormat = ({ message }: { message: string }) => {
   return (
     <div className="flex text-sm py-2 px-5 justify-start">
-      <div className="flex gap-2 w-[90%]">
+      <div className="flex gap-2 max-w-[90%]">
         <div className="flex flex-col gap-2 rounded shadow p-4 bg-white w-full">
-          <div className="font-bold">Top 5 user count by country {message}</div>
+          {message}
+          {/* <div className="font-bold">Top 5 user count by country {message}</div>
           <Tabs defaultValue="data" className="flex flex-col gap-2">
             <TabsList className="bg-white flex gap-2">
               <TabsTrigger value="data" className="bg-gray-200 p-4 flex">
@@ -63,7 +64,7 @@ const ModelFormat = ({ message }: { message: string }) => {
               qui quidem perspiciatis officiis non at porro odio quia adipisci
               cumque totam ab.
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

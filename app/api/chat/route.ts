@@ -8,23 +8,13 @@ export async function POST(req: NextRequest) {
     const {
       user: { id },
     } = (await auth()) as Session;
-    const { message, csvId } = await req.json();
+    const { csvId } = await req.json();
 
     const chat = await prisma.chat.create({
       data: {
         name: "New Chat", // optional field if you want to set it
         userId: id,
         csvId: csvId,
-        messages: {
-          create: {
-            type: "text", // or whatever type you need
-            role: "user", // or "assistant"
-            message: message,
-          },
-        },
-      },
-      include: {
-        messages: true, // so you also get the created message back
       },
     });
 

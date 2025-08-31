@@ -25,7 +25,14 @@ const ChatPage = () => {
   const handleMessage = async () => {
     setMessage("");
     const response = await axios.post("/api/chat", { message, csvId });
-    await queryClient.invalidateQueries({ queryKey: ["chats"] });
+    await axios.post("/api/message", {
+      chatId: response.data.id,
+      message,
+      messages: [],
+    });
+    queryClient.invalidateQueries({ queryKey: ["chats"] });
+    queryClient.invalidateQueries({ queryKey: ["chat"] });
+
     router.push(`/chat/${response.data.id}`);
   };
   return (
