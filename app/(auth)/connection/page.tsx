@@ -1,16 +1,22 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useConnection } from "@/hooks/useConnection";
+import { Csv } from "@prisma/client";
+import { fromNow } from "@/utils/date";
 
-const DataSourcePage = () => {
+const ConnectionPage = () => {
+  const { data, error, isLoading } = useConnection();
+  console.log(data);
   return (
     <div className="flex flex-col mx-auto">
       <div className="w-[800px] flex flex-col gap-4 py-4">
         <div className="flex justify-between">
           <div className="font-bold">Connection</div>
-          <Link href={"/data-source/type"}>
+          <Link href={"/connection/type"}>
             <Button>
               <FaPlus /> Create New
             </Button>
@@ -27,17 +33,21 @@ const DataSourcePage = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="text-sm">
-              <td className="border-y p-2 text-primary font-bold">CSV File</td>
-              <td className="border-y p-2">CSV</td>
-              <td className="border-y p-2">1 hour ago</td>
-              <td className="border-y p-2">
-                <Badge className="bg-green-500">Ready</Badge>
-              </td>
-              <td className="border-y p-2">
-                <FaTrash />
-              </td>
-            </tr>
+            {data?.map((csv: Csv) => (
+              <tr className="text-sm" key={csv.id}>
+                <td className="border-y p-2 text-primary font-bold">
+                  {csv.name}
+                </td>
+                <td className="border-y p-2">CSV</td>
+                <td className="border-y p-2">{fromNow(csv.createdAt)}</td>
+                <td className="border-y p-2">
+                  <Badge className="bg-green-500">{csv.status}</Badge>
+                </td>
+                <td className="border-y p-2">
+                  <FaTrash />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -45,4 +55,4 @@ const DataSourcePage = () => {
   );
 };
 
-export default DataSourcePage;
+export default ConnectionPage;

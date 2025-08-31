@@ -1,5 +1,5 @@
-import Csv from "@/components/data-source/csv";
-import Postgres from "@/components/data-source/postgres";
+import Csv from "@/components/connection/csv";
+import Postgres from "@/components/connection/postgres";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
@@ -10,7 +10,7 @@ const DataSourceTypePage = () => {
     <div className="flex flex-col mx-auto">
       <div className="w-[800px] flex flex-col gap-8 py-4">
         <div className="flex justify-between items-end">
-          <Link href={"/data-source"}>
+          <Link href={"/connection"}>
             <Button
               variant={"ghost"}
               className="font-bold text-md flex justify-start !p-0 !m-0"

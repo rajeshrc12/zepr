@@ -15,15 +15,46 @@ import { FaFileCsv } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Csv = () => {
-  const [, setFile] = useState<File | null>(null);
+  const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     setFile(selectedFile);
+  };
+  const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("data", JSON.stringify({ name, description }));
+
+    try {
+      const res = await axios.post("/api/connection/csv", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(res.status === 200, res.data?.rows);
+
+      if (res.status === 200 && res.data?.rows) {
+        toast.success("CSV Uploaded Successfully");
+        router.push("/connection");
+        return;
+      }
+      toast.error("CSV Upload failed");
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <AlertDialog>
@@ -66,7 +97,7 @@ const Csv = () => {
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
