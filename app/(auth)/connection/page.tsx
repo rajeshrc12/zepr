@@ -9,7 +9,8 @@ import { Csv } from "@prisma/client";
 import { fromNow } from "@/utils/date";
 
 const ConnectionPage = () => {
-  const { data, error, isLoading } = useConnection();
+  const { data } = useConnection();
+
   console.log(data);
   return (
     <div className="flex flex-col mx-auto">

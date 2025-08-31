@@ -1,9 +1,40 @@
+import { Chat, Message } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
 
+interface ChatExtended extends Chat {
+  messages: Message[];
+}
 const ChatBox = () => {
+  const queryClient = useQueryClient();
+  const { chatId } = useParams();
   const [message, setMessage] = useState("");
-  const handleMessage = () => {};
+  const handleMessage = async () => {
+    setMessage("");
+    queryClient.setQueryData(["chat", chatId], (old: ChatExtended) => {
+      if (!old) return old;
+      return {
+        ...old,
+        messages: [
+          ...old.messages,
+          {
+            id: crypto.randomUUID(), // temporary id until backend responds
+            type: "text",
+            role: "user",
+            message,
+            createdAt: new Date().toISOString(),
+            chatId,
+          },
+        ],
+      };
+    });
+    await axios.post("/api/message", { chatId, message });
+
+    queryClient.invalidateQueries({ queryKey: ["chat"] });
+  };
   return (
     <div className="flex w-[600px] border items-center p-4 rounded-xl bg-white">
       <input
@@ -14,7 +45,6 @@ const ChatBox = () => {
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && message.trim() !== "") {
-            setMessage("");
             handleMessage();
           }
         }}

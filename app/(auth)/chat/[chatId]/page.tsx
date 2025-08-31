@@ -1,34 +1,34 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import ChatBox from "@/components/chat-box";
 import UserFormat from "@/components/chat-format/user-format";
 import ModelFormat from "@/components/chat-format/model-format";
+import { useChat } from "@/hooks/useChat";
+import { useParams } from "next/navigation";
+import { Message } from "@prisma/client";
 
 const ChatIdPage = () => {
-  const [
-    chats,
-    // setChats
-  ] = useState([
-    { type: "user", message: "hi", role: "user" },
-    { type: "text", message: "", role: "model" },
-  ]);
+  const { chatId } = useParams();
+  const { data: chat } = useChat(chatId as string);
 
   // Ref for scrollable container
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Scroll to bottom whenever chats change
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && chat?.messages) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [chats]);
+  }, [chat?.messages]);
+
+  console.log(chat);
   return (
     <div className="flex-1 flex flex-col bg-gray-50 gap-5">
       <div className="flex-1 overflow-y-auto" ref={containerRef}>
-        {chats.map((chat, i) => {
+        {chat?.messages?.map((chat: Message) => {
           if (chat.role === "user")
-            return <UserFormat key={i} message={chat.message} />;
-          else return <ModelFormat key={i} message={chat.message} />;
+            return <UserFormat key={chat.id} message={chat.message} />;
+          else return <ModelFormat key={chat.id} message={chat.message} />;
         })}
       </div>
 
