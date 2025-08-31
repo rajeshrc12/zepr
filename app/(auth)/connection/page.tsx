@@ -9,7 +9,7 @@ const DataSourcePage = () => {
     <div className="flex flex-col mx-auto">
       <div className="w-[800px] flex flex-col gap-4 py-4">
         <div className="flex justify-between">
-          <div className="font-bold">Resources</div>
+          <div className="font-bold">Connection</div>
           <Link href={"/data-source/type"}>
             <Button>
               <FaPlus /> Create New
@@ -19,7 +19,7 @@ const DataSourcePage = () => {
         <table className="w-full text-gray-500">
           <thead className="font-bold">
             <tr>
-              <th className="border-y p-2 text-left">Source</th>
+              <th className="border-y p-2 text-left">Name</th>
               <th className="border-y p-2 text-left">Type</th>
               <th className="border-y p-2 text-left">Created</th>
               <th className="border-y p-2 text-left">Status</th>

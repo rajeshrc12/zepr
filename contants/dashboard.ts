@@ -4,7 +4,7 @@ export const NAVBAR_MENU = [
     href: "/chat",
   },
   {
-    value: "Data source",
-    href: "/data-source",
+    value: "Data Connection",
+    href: "/connection",
   },
 ];
