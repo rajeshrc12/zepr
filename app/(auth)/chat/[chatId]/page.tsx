@@ -9,8 +9,8 @@ const ChatIdPage = () => {
     chats,
     // setChats
   ] = useState([
-    { message: "Hi", role: "user" },
-    { message: "Hi", role: "model" },
+    { type: "user", message: "hi", role: "user" },
+    { type: "text", message: "", role: "model" },
   ]);
 
   // Ref for scrollable container

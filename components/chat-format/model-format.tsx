@@ -57,12 +57,12 @@ const ModelFormat = ({ message }: { message: string }) => {
 
           <div>
             <div className="font-bold">Interpretation</div>
-            <ul className="list-inside">
-              <li>5 cups chopped Porcini mushrooms</li>
-              <li>5 cups chopped Porcini mushrooms</li>
-              <li>5 cups chopped Porcini mushrooms</li>
-              <li>5 cups chopped Porcini mushrooms</li>
-            </ul>
+            <div>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda
+              aliquam optio eum exercitationem rerum nobis laudantium excepturi,
+              qui quidem perspiciatis officiis non at porro odio quia adipisci
+              cumque totam ab.
+            </div>
           </div>
         </div>
       </div>
