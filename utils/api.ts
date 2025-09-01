@@ -1,20 +1,11 @@
 import { getPool } from "@/lib/pg";
 import { Column, Csv } from "@prisma/client";
+import { isDateString } from "./date";
 
 export function detectPostgresType(value: string): string {
   if (!value || value.trim() === "") return "TEXT";
 
-  // Integer check
-  if (/^-?\d+$/.test(value)) return "INTEGER";
-
-  // Float/decimal check
-  if (/^-?\d*\.\d+$/.test(value)) return "DECIMAL";
-
-  // Boolean check
-  if (/^(true|false)$/i.test(value)) return "BOOLEAN";
-
-  // Date check (ISO, yyyy-mm-dd, etc.)
-  if (!isNaN(Date.parse(value))) return "TIMESTAMP";
+  if (isDateString(value)) return "TIMESTAMP";
 
   // Default fallback
   return "TEXT";
@@ -81,7 +72,7 @@ You are an AI Data Analyst.
 
 You have access to the following dataset:  
 
-Table Name (original file): ${csv.fileName}  
+Table Name (original file): ${csv.name}  
 SQL Table Name: csv_${csv.id}  
 Table description: ${csv.description}  
 
