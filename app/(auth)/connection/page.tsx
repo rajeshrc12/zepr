@@ -4,12 +4,12 @@ import React from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useConnection } from "@/hooks/useConnection";
+import { useConnections } from "@/hooks/useConnections";
 import { Csv } from "@prisma/client";
 import { fromNow } from "@/utils/date";
 
 const ConnectionPage = () => {
-  const { data } = useConnection();
+  const { data } = useConnections();
 
   console.log(data);
   return (
