@@ -36,7 +36,7 @@ const ChatIdPage = () => {
           else if (chat.role === "user")
             return <UserFormat key={chat.id} message={chat.message} />;
           else if (chat.role === "model")
-            return <ModelFormat key={chat.id} message={chat.message} />;
+            return <ModelFormat key={chat.id} message={chat} />;
         })}
       </div>
       <div className="w-full flex justify-center pb-5">

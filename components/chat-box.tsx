@@ -14,6 +14,7 @@ const ChatBox = () => {
   const [message, setMessage] = useState("");
   const handleMessage = async () => {
     setMessage("");
+
     queryClient.setQueryData(["chat", chatId], (old: ChatExtended) => {
       if (!old) return old;
       return {
@@ -47,6 +48,7 @@ const ChatBox = () => {
       chatId,
       message,
       messages: chatData?.messages,
+      csvId: chatData.csvId,
     });
 
     queryClient.invalidateQueries({ queryKey: ["chat"] });

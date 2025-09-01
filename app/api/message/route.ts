@@ -2,15 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getGeminiClient } from "@/lib/gemini";
 import { Type } from "@google/genai";
-import { Message } from "@prisma/client";
+import { Csv, Message } from "@prisma/client";
+import { getSystemInstruction } from "@/utils/api";
+import { getPool } from "@/lib/pg";
 const client = getGeminiClient();
-
+const pool = getPool();
 export async function POST(req: NextRequest) {
   try {
-    const { message, messages, chatId } = await req.json();
+    const { message, messages, chatId, csvId } = await req.json();
+    console.log(chatId);
+
+    const columns = await prisma.column.findMany({ where: { csvId } });
+    const csv = (await prisma.csv.findFirst({ where: { id: csvId } })) as Csv;
+    const systemInstruction = getSystemInstruction(csv, columns);
+    console.log(systemInstruction);
     const geminiChat = client.chats.create({
       model: "gemini-2.5-flash",
       config: {
+        systemInstruction,
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
@@ -19,7 +28,7 @@ export async function POST(req: NextRequest) {
             properties: {
               type: {
                 type: Type.STRING,
-                enum: ["text"],
+                enum: ["sql", "text"],
               },
               message: {
                 type: Type.STRING,
@@ -37,8 +46,23 @@ export async function POST(req: NextRequest) {
     const response = await geminiChat.sendMessage({
       message,
     });
-    console.log(response.text);
     const modelResponse = JSON.parse(response?.text || "[]");
+    const chatResponseSQLData = [];
+
+    for (const chat of modelResponse) {
+      if (chat.type === "sql") {
+        const result = await pool.query(chat.message);
+        chatResponseSQLData.push({ ...chat, chatId, role: "model" });
+        chatResponseSQLData.push({
+          chatId,
+          role: "model",
+          type: "table",
+          message: JSON.stringify(result.rows),
+        });
+      } else {
+        chatResponseSQLData.push({ ...chat, chatId, role: "model" });
+      }
+    }
 
     const messageResponse = await prisma.message.createMany({
       data: [
@@ -48,11 +72,7 @@ export async function POST(req: NextRequest) {
           role: "user", // or "assistant"
           message,
         },
-        ...modelResponse.map((mr: Message) => ({
-          ...mr,
-          chatId,
-          role: "model",
-        })),
+        ...chatResponseSQLData,
       ],
     });
 
