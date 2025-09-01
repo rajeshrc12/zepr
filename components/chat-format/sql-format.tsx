@@ -1,8 +1,10 @@
 import React from "react";
+import CodeBlock from "@/components/code-block";
+
 const SQLFormat = ({ sql }: { sql: string }) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="bg-primary text-white rounded p-2">{sql}</div>
+      <CodeBlock code={sql} lang="sql" />
       <div>
         <div className="font-bold">Query Explaination</div>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo laborum
