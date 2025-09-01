@@ -6,10 +6,12 @@ import ModelFormat from "@/components/chat-format/model-format";
 import { useChat } from "@/hooks/useChat";
 import { useParams } from "next/navigation";
 import { Message } from "@prisma/client";
+import { ImSpinner2 } from "react-icons/im";
+import LoaderFormat from "@/components/chat-format/loader-format";
 
 const ChatIdPage = () => {
   const { chatId } = useParams();
-  const { data: chat } = useChat(chatId as string);
+  const { data: chat, isLoading } = useChat(chatId as string);
 
   // Ref for scrollable container
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -21,17 +23,22 @@ const ChatIdPage = () => {
     }
   }, [chat?.messages]);
 
-  console.log(chat);
   return (
     <div className="flex-1 flex flex-col bg-gray-50 gap-5">
       <div className="flex-1 overflow-y-auto" ref={containerRef}>
+        {isLoading && (
+          <div className="flex justify-center py-10">
+            <ImSpinner2 size={20} className="animate-spin" />
+          </div>
+        )}
         {chat?.messages?.map((chat: Message) => {
-          if (chat.role === "user")
+          if (chat.type === "loader") return <LoaderFormat key={chat.id} />;
+          else if (chat.role === "user")
             return <UserFormat key={chat.id} message={chat.message} />;
-          else return <ModelFormat key={chat.id} message={chat.message} />;
+          else if (chat.role === "model")
+            return <ModelFormat key={chat.id} message={chat.message} />;
         })}
       </div>
-
       <div className="w-full flex justify-center pb-5">
         <ChatBox />
       </div>

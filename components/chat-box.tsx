@@ -28,6 +28,14 @@ const ChatBox = () => {
             createdAt: new Date().toISOString(),
             chatId,
           },
+          {
+            id: crypto.randomUUID(), // temporary id until backend responds
+            type: "loader",
+            role: "model",
+            message: "",
+            createdAt: new Date().toISOString(),
+            chatId,
+          },
         ],
       };
     });

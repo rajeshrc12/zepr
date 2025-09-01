@@ -8,7 +8,7 @@ const ModelFormat = ({ message }: { message: string }) => {
   return (
     <div className="flex text-sm py-2 px-5 justify-start">
       <div className="flex gap-2 max-w-[90%]">
-        <div className="flex flex-col gap-2 rounded shadow p-4 bg-white w-full">
+        <div className="flex flex-col gap-2 rounded shadow p-2 bg-white w-full">
           {message}
           {/* <div className="font-bold">Top 5 user count by country {message}</div>
           <Tabs defaultValue="data" className="flex flex-col gap-2">
