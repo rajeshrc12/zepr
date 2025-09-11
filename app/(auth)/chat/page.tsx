@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useConnection } from "@/hooks/useConnection";
+import { useConnections } from "@/hooks/useConnections";
 import { Csv } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const ChatPage = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data } = useConnection();
+  const { data } = useConnections();
   const [message, setMessage] = useState("");
   const [csvId, setCsvId] = useState("");
   const handleMessage = async () => {

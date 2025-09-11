@@ -10,8 +10,8 @@ async function fetchChat(chatId: string) {
 
 export function useChat(chatId: string) {
   return useQuery({
-    queryKey: ["chat", chatId], // ✅ unique cache per chatId
+    queryKey: ["chat", chatId],
     queryFn: () => fetchChat(chatId),
-    enabled: !!chatId, // ✅ optional: only run if chatId exists
+    enabled: !!chatId,
   });
 }

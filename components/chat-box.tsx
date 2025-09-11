@@ -4,6 +4,7 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
+import CsvTable from "./csv-table";
 
 interface ChatExtended extends Chat {
   messages: Message[];
@@ -54,20 +55,23 @@ const ChatBox = () => {
     queryClient.invalidateQueries({ queryKey: ["chat"] });
   };
   return (
-    <div className="flex w-[600px] border items-center p-4 rounded-xl bg-white">
-      <input
-        type="text"
-        placeholder="What do you want to know ?"
-        className="outline-none w-full"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && message.trim() !== "") {
-            handleMessage();
-          }
-        }}
-      />
-      <LuSendHorizontal />
+    <div className="flex flex-col gap-2">
+      <CsvTable />
+      <div className="flex w-[600px] border items-center p-4 rounded-xl bg-white shadow">
+        <input
+          type="text"
+          placeholder="What do you want to know ?"
+          className="outline-none w-full"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && message.trim() !== "") {
+              handleMessage();
+            }
+          }}
+        />
+        <LuSendHorizontal />
+      </div>
     </div>
   );
 };

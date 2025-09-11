@@ -3,14 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-async function fetchConnection() {
+async function fetchConnections() {
   const res = await axios.get("api/connection/csv");
   return res.data;
 }
 
-export function useConnection() {
+export function useConnections() {
   return useQuery({
     queryKey: ["connection"],
-    queryFn: fetchConnection,
+    queryFn: fetchConnections,
   });
 }
