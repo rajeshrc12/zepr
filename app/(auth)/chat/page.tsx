@@ -71,7 +71,7 @@ const ChatPage = () => {
             <LuSendHorizontal />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        {/* <div className="grid grid-cols-2 gap-2">
           {new Array(4).fill(0).map((_, i) => (
             <Button
               variant={"outline"}
@@ -81,7 +81,7 @@ const ChatPage = () => {
               who are my top 5 user ?
             </Button>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

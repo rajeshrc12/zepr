@@ -14,8 +14,8 @@ const Navbar = () => {
         ))}
       </div>
       <div className="flex items-center gap-2">
-        <div className="text-sm">Rajesh</div>
-        <Profile />
+        {/* <div className="text-sm">Rajesh</div>
+        <Profile /> */}
       </div>
     </div>
   );
