@@ -27,6 +27,7 @@ const ChatPage = () => {
     const response = await axios.post("/api/chat", { message, csvId });
     await axios.post("/api/message", {
       chatId: response.data.id,
+      csvId,
       message,
       messages: [],
     });

@@ -70,7 +70,13 @@ export async function GET() {
     } = (await auth()) as Session;
 
     // Save to DB
-    const csvs = await prisma.csv.findMany({ where: { userId: id } });
+    const csvs = await prisma.csv.findMany({
+      where: {
+        userId: {
+          in: [id, "68b40ab6cca7cecedf1741cc"], // fetch all rows where userId matches any in this array
+        },
+      },
+    });
 
     return NextResponse.json(csvs, { status: 200 });
   } catch (error) {
