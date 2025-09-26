@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
 import CsvTable from "./csv-table";
+import { toast } from "sonner";
 
 interface ChatExtended extends Chat {
   messages: Message[];
@@ -14,6 +15,11 @@ const ChatBox = () => {
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
   const handleMessage = async () => {
+    if (!message.trim()) {
+      toast.info("Type your query");
+      return;
+    }
+
     setMessage("");
 
     queryClient.setQueryData(["chat", chatId], (old: ChatExtended) => {
@@ -65,12 +71,12 @@ const ChatBox = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && message.trim() !== "") {
+            if (e.key === "Enter") {
               handleMessage();
             }
           }}
         />
-        <LuSendHorizontal />
+        <LuSendHorizontal onClick={handleMessage} />
       </div>
     </div>
   );

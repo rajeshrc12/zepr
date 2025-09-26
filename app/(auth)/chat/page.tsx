@@ -9,12 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { useConnections } from "@/hooks/useConnections";
 import { Csv } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const ChatPage = () => {
   const queryClient = useQueryClient();
@@ -23,6 +23,15 @@ const ChatPage = () => {
   const [message, setMessage] = useState("");
   const [csvId, setCsvId] = useState("");
   const handleMessage = async () => {
+    if (!message.trim()) {
+      toast.info("Type your query");
+      return;
+    }
+    if (!csvId) {
+      toast.info("Select Data Source");
+      return;
+    }
+
     setMessage("");
     const response = await axios.post("/api/chat", { message, csvId });
     await axios.post("/api/message", {
@@ -69,7 +78,7 @@ const ChatPage = () => {
                 ))}
               </SelectContent>
             </Select>
-            <LuSendHorizontal />
+            <LuSendHorizontal onClick={handleMessage} />
           </div>
         </div>
         {/* <div className="grid grid-cols-2 gap-2">
