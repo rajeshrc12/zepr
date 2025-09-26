@@ -15,6 +15,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { ImSpinner2 } from "react-icons/im";
 
 const ChatPage = () => {
   const queryClient = useQueryClient();
@@ -22,6 +23,7 @@ const ChatPage = () => {
   const { data } = useConnections();
   const [message, setMessage] = useState("");
   const [csvId, setCsvId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const handleMessage = async () => {
     if (!message.trim()) {
       toast.info("Type your query");
@@ -31,7 +33,7 @@ const ChatPage = () => {
       toast.info("Select Data Source");
       return;
     }
-
+    setIsLoading(true);
     setMessage("");
     const response = await axios.post("/api/chat", { message, csvId });
     await axios.post("/api/message", {
@@ -44,6 +46,7 @@ const ChatPage = () => {
     queryClient.invalidateQueries({ queryKey: ["chat"] });
 
     router.push(`/chat/${response.data.id}`);
+    setIsLoading(false);
   };
   return (
     <div className="bg-gray-100 flex-1 flex flex-col gap-5 justify-center items-center">
@@ -78,7 +81,11 @@ const ChatPage = () => {
                 ))}
               </SelectContent>
             </Select>
-            <LuSendHorizontal onClick={handleMessage} />
+            {isLoading ? (
+              <ImSpinner2 size={20} className="animate-spin" />
+            ) : (
+              <LuSendHorizontal onClick={handleMessage} />
+            )}
           </div>
         </div>
         {/* <div className="grid grid-cols-2 gap-2">
