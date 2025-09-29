@@ -59,6 +59,18 @@ export async function POST(req: NextRequest) {
           type: "table",
           message: JSON.stringify(result.rows),
         });
+        chatResponseSQLData.push({
+          chatId,
+          role: "model",
+          type: "chart",
+          message: "This is chart",
+        });
+        chatResponseSQLData.push({
+          chatId,
+          role: "model",
+          type: "explain",
+          message: "This is explaination",
+        });
       } else {
         chatResponseSQLData.push({ ...chat, chatId, role: "model" });
       }

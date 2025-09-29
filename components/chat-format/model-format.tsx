@@ -2,6 +2,8 @@ import React from "react";
 import { Message } from "@prisma/client";
 import SQLFormat from "@/components/chat-format/sql-format";
 import TableFormat from "./table-format";
+import ChartFormat from "./chart-format";
+import ExplainFormat from "./explain-format";
 
 const ModelFormat = ({ message }: { message: Message }) => {
   return (
@@ -12,6 +14,12 @@ const ModelFormat = ({ message }: { message: Message }) => {
           {message.type === "sql" && <SQLFormat sql={message.message} />}
           {message.type === "table" && (
             <TableFormat dataString={message.message} />
+          )}
+          {message.type === "chart" && (
+            <ChartFormat message={message.message} />
+          )}
+          {message.type === "explain" && (
+            <ExplainFormat message={message.message} />
           )}
         </div>
       </div>

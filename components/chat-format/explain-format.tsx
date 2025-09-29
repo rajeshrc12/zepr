@@ -1,7 +1,7 @@
 import React from "react";
 
-const ChartFormat = ({ message }: { message: string }) => {
+const ExplainFormat = ({ message }: { message: string }) => {
   return <div className="flex flex-col gap-2">{message}</div>;
 };
 
-export default ChartFormat;
+export default ExplainFormat;
