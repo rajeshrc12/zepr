@@ -1,6 +1,9 @@
 import { getPool } from "@/lib/pg";
 import { Column, Csv } from "@prisma/client";
 import { isDateString } from "./date";
+import { getGeminiClient } from "@/lib/gemini";
+const pool = getPool();
+const client = getGeminiClient();
 
 export function detectPostgresType(value: string): string {
   if (!value || value.trim() === "") return "TEXT";
@@ -10,7 +13,6 @@ export function detectPostgresType(value: string): string {
   // Default fallback
   return "TEXT";
 }
-const pool = getPool();
 
 export async function createTableFromSchema(
   tableId: string,
@@ -80,17 +82,19 @@ Schema:
 ${schemaText}  
 
 Your tasks:  
-1. Generate valid PostgreSQL SQL queries strictly based on this schema.  
+
+1. Act like a data analyst:  
+   - Your primary role is to accept user queries and translate them into SQL statements.
+   - If the user asks questions unrelated to analyzing data, politely remind them to focus only on data analysis.
+   - When asked for the table structure or schema, provide only the column names in plain language, not in SQL format.
+
+2. Generate valid PostgreSQL SQL queries strictly based on this schema.  
    - Always wrap table names and column names in double quotes exactly as they appear in the schema to handle case sensitivity (e.g., "Country").  
-   - When asked for the table structure or schema, provide only the column names in plain language, not in SQL format.  
    - Use correct data types in WHERE clauses (text in quotes, numbers without quotes, timestamps in proper format).  
    - If a column is nullable, include IS NULL or IS NOT NULL conditions if relevant.  
    - Do not invent or assume columns outside of the schema.
    - Always append a LIMIT 5 clause—whichever is most relevant to the user's query—to prevent fetching excessive data.
-   
-2. Act like a data analyst:  
-   - Your primary role is to accept user queries and translate them into SQL statements.
-   - If the user asks questions unrelated to generating SQL, politely remind them to focus only on queries that require SQL code.
+   - Always structure the result so that the first column is categorical (text/string), the last column is numerical (integer/float/value), and any other columns (if relevant) appear between them based on the user's query
 
 3. Output format:  
 Return your answer as a JSON array of objects.  
@@ -104,14 +108,38 @@ Example output structure 1:
     "type": "sql",
     "message": "SELECT \\"Country\\", COUNT(*) AS customer_count FROM \\"csv_cmewh96du000dt9xothtzer2u\\" GROUP BY \\"Country\\" ORDER BY customer_count DESC;"
   },
-]  
-
-Example output structure 2:  
-[
-  {
-    "type": "text",
-    "message": "Hi, how can I help ?"
-  }
 ] 
 `;
+}
+
+export async function generateSummary(
+  message: string,
+  table: Record<string, string>[]
+) {
+  console.log(table);
+
+  const response = await client.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `
+    user query:
+    ${message}
+
+    data:
+    ${JSON.stringify(table)}
+    `,
+    config: {
+      systemInstruction: `
+      You are given a user query and a dataset (array of objects).
+
+      Your task is to:
+      - Carefully analyze the dataset in the context of the user query.
+      - Generate a clear, concise, and insightful answer that directly addresses the query.
+      - Present the results in a well-structured summary using bullet points or other Markdown formatting where appropriate.
+      - Include contextual insights, comparisons, or trends to make the explanation more meaningful.
+      - Use proper Markdown formatting (headings, bold or numbering)
+      - Focus on accuracy, readability, and actionable information.
+    `,
+    },
+  });
+  return response.text;
 }

@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getGeminiClient } from "@/lib/gemini";
 import { Type } from "@google/genai";
-import { Csv, Message } from "@prisma/client";
-import { getSystemInstruction } from "@/utils/api";
+import { Csv } from "@prisma/client";
+import { generateSummary, getSystemInstruction } from "@/utils/api";
 import { getPool } from "@/lib/pg";
 const client = getGeminiClient();
 const pool = getPool();
 export async function POST(req: NextRequest) {
   try {
-    const { message, messages, chatId, csvId } = await req.json();
+    const { message, chatId, csvId } = await req.json();
     console.log(chatId);
 
     const columns = await prisma.column.findMany({ where: { csvId } });
@@ -38,10 +38,6 @@ export async function POST(req: NextRequest) {
           },
         },
       },
-      history: messages.map((m: Message) => ({
-        role: m.role,
-        parts: [{ text: m.message }],
-      })),
     });
     const response = await geminiChat.sendMessage({
       message,
@@ -59,17 +55,12 @@ export async function POST(req: NextRequest) {
           type: "table",
           message: JSON.stringify(result.rows),
         });
-        chatResponseSQLData.push({
-          chatId,
-          role: "model",
-          type: "chart",
-          message: "This is chart",
-        });
+        const summary = await generateSummary(message, result.rows);
         chatResponseSQLData.push({
           chatId,
           role: "model",
           type: "explain",
-          message: "This is explaination",
+          message: summary,
         });
       } else {
         chatResponseSQLData.push({ ...chat, chatId, role: "model" });

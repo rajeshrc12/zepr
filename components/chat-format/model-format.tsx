@@ -15,8 +15,8 @@ const ModelFormat = ({ message }: { message: Message }) => {
           {message.type === "table" && (
             <TableFormat dataString={message.message} />
           )}
-          {message.type === "chart" && (
-            <ChartFormat message={message.message} />
+          {message.type === "table" && (
+            <ChartFormat dataString={message.message} />
           )}
           {message.type === "explain" && (
             <ExplainFormat message={message.message} />
