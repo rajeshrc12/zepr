@@ -22,7 +22,7 @@ const ChatMenu = () => {
               chatId === chat.id && "bg-gray-100"
             )}
           >
-            {chat.name}
+            {chat.name.slice(0, 27)}
             {chatId === chat.id && <CiMenuKebab />}
           </Button>
         </Link>

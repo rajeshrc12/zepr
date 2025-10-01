@@ -122,7 +122,7 @@ export async function generateSummary(
   table: Record<string, string>[]
 ) {
   const response = await openRouter.chat.completions.create({
-    model: "x-ai/grok-4-fast:free",
+    model: "deepseek/deepseek-chat-v3.1:free",
     messages: [
       {
         role: "system",

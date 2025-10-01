@@ -36,6 +36,10 @@ const ChatPage = () => {
     setIsLoading(true);
     setMessage("");
     const response = await axios.post("/api/chat", { message, csvId });
+    await axios.post("/api/title", {
+      chatId: response.data.id,
+      message,
+    });
     await axios.post("/api/message", {
       chatId: response.data.id,
       csvId,
