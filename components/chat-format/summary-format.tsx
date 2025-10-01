@@ -2,7 +2,7 @@ import React from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-const ExplainFormat = ({ message }: { message: string }) => {
+const SummaryFormat = ({ message }: { message: string }) => {
   return (
     <div className="flex flex-col gap-2">
       <Markdown remarkPlugins={[remarkGfm]}>{message}</Markdown>
@@ -10,4 +10,4 @@ const ExplainFormat = ({ message }: { message: string }) => {
   );
 };
 
-export default ExplainFormat;
+export default SummaryFormat;

@@ -47,20 +47,16 @@ export async function POST(req: NextRequest) {
 
     for (const chat of modelResponse) {
       if (chat.type === "sql") {
-        const result = await pool.query(chat.message);
-        chatResponseSQLData.push({ ...chat, chatId, role: "model" });
+        const table = (await pool.query(chat.message))?.rows;
+        const summary = await generateSummary(message, table);
+
         chatResponseSQLData.push({
+          ...chat,
           chatId,
           role: "model",
-          type: "table",
-          message: JSON.stringify(result.rows),
-        });
-        const summary = await generateSummary(message, result.rows);
-        chatResponseSQLData.push({
-          chatId,
-          role: "model",
-          type: "explain",
-          message: summary,
+          sql: chat.message,
+          table: JSON.stringify(table),
+          summary,
         });
       } else {
         chatResponseSQLData.push({ ...chat, chatId, role: "model" });

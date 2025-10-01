@@ -53,6 +53,9 @@ model Message {
   type      String
   role      String
   message   String
+  sql       String?  @default("")
+  table     String?  @default("")
+  summary   String?  @default("")
   createdAt DateTime @default(now())
   Chat      Chat     @relation(fields: [chatId], references: [id])
   chatId    String   @db.ObjectId

@@ -17,7 +17,7 @@ interface CustomBarChartProps {
 
 const CustomBarChart = ({ data, xDataKey, yDataKey }: CustomBarChartProps) => {
   return (
-    <div className="w-[70vw] h-[300px]">
+    <div className="h-[300px]">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}

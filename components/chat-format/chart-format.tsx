@@ -29,7 +29,6 @@ const ChartFormat: React.FC<TableFormatProps> = ({ dataString }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="font-semibold mb-2">Sales Report</h3> {/* Title */}
       <CustomBarChart data={data} xDataKey={xDataKey} yDataKey={yDataKey} />
     </div>
   );
