@@ -21,6 +21,9 @@ const ChatBox = () => {
     }
 
     setMessage("");
+    const chatData = queryClient.getQueryData(["chat", chatId]) as Chat & {
+      messages: Message[];
+    };
 
     queryClient.setQueryData(["chat", chatId], (old: ChatExtended) => {
       if (!old) return old;
@@ -47,17 +50,17 @@ const ChatBox = () => {
         ],
       };
     });
-    const chatData = queryClient.getQueryData(["chat", chatId]) as Chat & {
-      messages: Message[];
-    };
-    console.log(chatData);
-    await axios.post("/api/message", {
+
+    const messageResponse = await axios.post("/api/message", {
       chatId,
       message,
       messages: chatData?.messages,
       csvId: chatData.csvId,
     });
-
+    if (messageResponse.status === 401) {
+      toast.error("Error while process query");
+      return;
+    }
     queryClient.invalidateQueries({ queryKey: ["chat"] });
   };
   return (

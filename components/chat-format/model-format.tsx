@@ -15,7 +15,9 @@ const ModelFormat = ({ message }: { message: Message }) => {
         <div className="flex flex-col gap-2 rounded shadow p-2 bg-white w-full">
           {message.sql ? (
             <div className="flex flex-col gap-3">
-              {message.summary && <SummaryFormat message={message.summary} />}
+              {message.message && (
+                <SummaryFormat message={message.message as string} />
+              )}
               <div className="flex gap-2">
                 <Button
                   variant={tool == "sql" ? "default" : "outline"}
@@ -48,7 +50,7 @@ const ModelFormat = ({ message }: { message: Message }) => {
               )}
             </div>
           ) : (
-            message.message
+            <SummaryFormat message={message.message as string} />
           )}
         </div>
       </div>

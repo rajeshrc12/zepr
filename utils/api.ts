@@ -1,9 +1,9 @@
 import { getPool } from "@/lib/pg";
 import { Column, Csv } from "@prisma/client";
 import { isDateString } from "./date";
-import { getGeminiClient } from "@/lib/gemini";
+import { getOpenRouterClient } from "@/lib/open-router";
 const pool = getPool();
-const client = getGeminiClient();
+const openRouter = getOpenRouterClient();
 
 export function detectPostgresType(value: string): string {
   if (!value || value.trim() === "") return "TEXT";
@@ -87,14 +87,19 @@ Your tasks:
    - Your primary role is to accept user queries and translate them into SQL statements.
    - If the user asks questions unrelated to analyzing data, politely remind them to focus only on data analysis.
    - When asked for the table structure or schema, provide only the column names in plain language, not in SQL format.
+   - You may reference previous conversation history to inform your responses, but only when relevant to the current query.
+   - When providing answers of type:text, use proper Markdown formatting, including headings, bold text, numbered or bulleted lists, and other relevant Markdown features to enhance readability.
+   - Give response in short paragrap, dont give long answers.
+
 
 2. Generate valid PostgreSQL SQL queries strictly based on this schema.  
    - Always wrap table names and column names in double quotes exactly as they appear in the schema to handle case sensitivity (e.g., "Country").  
    - Use correct data types in WHERE clauses (text in quotes, numbers without quotes, timestamps in proper format).  
    - If a column is nullable, include IS NULL or IS NOT NULL conditions if relevant.  
    - Do not invent or assume columns outside of the schema.
-   - Always append a LIMIT 5 clause—whichever is most relevant to the user's query—to prevent fetching excessive data.
+   - Always return only the Top 5 results most relevant to the user's query by using an appropriate ORDER BY clause followed by LIMIT 5
    - Always structure the result so that the first column is categorical (text/string), the last column is numerical (integer/float/value), and any other columns (if relevant) appear between them based on the user's query
+   - Provide only one query at time
 
 3. Output format:  
 Return your answer as a JSON array of objects.  
@@ -102,7 +107,7 @@ Each object must contain:
 - \`type\`: one of ["sql", "text"]  
 - \`message\`: the actual SQL query or any other explaination or follow up reply or questions
 
-Example output structure 1:  
+Example output structure:  
 [
   {
     "type": "sql",
@@ -116,19 +121,12 @@ export async function generateSummary(
   message: string,
   table: Record<string, string>[]
 ) {
-  console.log(table);
-
-  const response = await client.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: `
-    user query:
-    ${message}
-
-    data:
-    ${JSON.stringify(table)}
-    `,
-    config: {
-      systemInstruction: `
+  const response = await openRouter.chat.completions.create({
+    model: "x-ai/grok-4-fast:free",
+    messages: [
+      {
+        role: "system",
+        content: `
       You are given a user query and a dataset (array of objects).
 
       Your task is to:
@@ -137,9 +135,20 @@ export async function generateSummary(
       - Present the results in a well-structured summary using bullet points or other Markdown formatting where appropriate.
       - Include contextual insights, comparisons, or trends to make the explanation more meaningful.
       - Use proper Markdown formatting (headings, bold or numbering)
-      - Focus on accuracy, readability, and actionable information.
+      - Give response in short paragrap, dont give long answers.
     `,
-    },
+      },
+      {
+        role: "user",
+        content: `
+    user query:
+    ${message}
+
+    data:
+    ${JSON.stringify(table)}
+    `,
+      },
+    ],
   });
-  return response.text;
+  return response.choices[0]?.message?.content;
 }

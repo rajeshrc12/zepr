@@ -57,6 +57,7 @@ const ChatPage = () => {
         </div>
         <div className="flex flex-col border p-4 gap-3 rounded-xl bg-white shadow">
           <input
+            disabled={isLoading}
             value={message || ""}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => {
@@ -69,7 +70,11 @@ const ChatPage = () => {
             className="outline-none w-full"
           />
           <div className="flex justify-between items-center">
-            <Select value={csvId} onValueChange={(e) => setCsvId(e)}>
+            <Select
+              value={csvId}
+              onValueChange={(e) => setCsvId(e)}
+              disabled={isLoading}
+            >
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Select source" />
               </SelectTrigger>

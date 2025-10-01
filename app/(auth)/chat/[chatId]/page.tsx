@@ -22,7 +22,7 @@ const ChatIdPage = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [chat?.messages]);
-
+  console.log(chat);
   return (
     <div className="flex-1 flex flex-col bg-gray-50 gap-5">
       <div className="flex-1 overflow-y-auto px-20" ref={containerRef}>

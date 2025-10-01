@@ -15,16 +15,35 @@ export default function CodeBlock({
 
   useEffect(() => {
     async function highlight() {
-      // Format SQL into multiple lines
-      const formatted =
-        lang === "sql" ? format(code, { language: "sql" }) : code;
+      try {
+        let formatted = code;
 
-      const html = await codeToHtml(formatted, {
-        lang,
-        theme: "slack-dark", // try "github-dark", "dracula", etc.
-      });
-      setHtml(html);
+        if (lang === "sql") {
+          try {
+            // Try with PostgreSQL dialect first
+            formatted = format(code, { language: "postgresql" });
+          } catch (e1) {
+            console.warn("PostgreSQL formatting failed, using raw SQL:", e1);
+            // fallback: keep raw code unformatted
+            formatted = code;
+          }
+        }
+
+        const html = await codeToHtml(formatted, {
+          lang,
+          theme: "slack-dark",
+        });
+
+        setHtml(html);
+      } catch (error) {
+        console.error("Error highlighting code:", error);
+        // show raw code as plain text on error
+        setHtml(
+          `<pre style="color: red; padding: 8px;">Error formatting code. Showing raw:\n\n${code}</pre>`
+        );
+      }
     }
+
     highlight();
   }, [code, lang]);
 

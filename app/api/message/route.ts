@@ -1,48 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getGeminiClient } from "@/lib/gemini";
-import { Type } from "@google/genai";
-import { Csv } from "@prisma/client";
+import { Csv, Message } from "@prisma/client";
 import { generateSummary, getSystemInstruction } from "@/utils/api";
 import { getPool } from "@/lib/pg";
-const client = getGeminiClient();
+import { getOpenRouterClient } from "@/lib/open-router";
+const openRouter = getOpenRouterClient();
 const pool = getPool();
 export async function POST(req: NextRequest) {
   try {
-    const { message, chatId, csvId } = await req.json();
-    console.log(chatId);
+    const { message, messages, chatId, csvId } = await req.json();
+    const history = messages.slice(-4).map((message: Message) => {
+      if (message.role == "model")
+        return { role: "assistant", content: message.message };
+      return { role: "user", content: message.message };
+    });
 
     const columns = await prisma.column.findMany({ where: { csvId } });
     const csv = (await prisma.csv.findFirst({ where: { id: csvId } })) as Csv;
     const systemInstruction = getSystemInstruction(csv, columns);
-    console.log(systemInstruction);
-    const geminiChat = client.chats.create({
-      model: "gemini-2.5-flash",
-      config: {
-        systemInstruction,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              type: {
-                type: Type.STRING,
-                enum: ["sql", "text"],
-              },
-              message: {
-                type: Type.STRING,
-              },
-            },
-            required: ["type", "message"],
-          },
-        },
-      },
-    });
-    const response = await geminiChat.sendMessage({
-      message,
-    });
-    const modelResponse = JSON.parse(response?.text || "[]");
+    let response = null;
+    try {
+      response = await openRouter.chat.completions.create({
+        model: "x-ai/grok-4-fast:free",
+        messages: [
+          { role: "system", content: systemInstruction },
+          ...history,
+          { role: "user", content: message },
+        ],
+      });
+
+      response = response.choices[0]?.message?.content || "[]";
+    } catch (e) {
+      console.log(e);
+      return NextResponse.json(
+        [{ type: "text", message: "Error while process query " }],
+        { status: 401 }
+      );
+    }
+    const modelResponse = JSON.parse(response);
     const chatResponseSQLData = [];
 
     for (const chat of modelResponse) {
@@ -56,7 +51,7 @@ export async function POST(req: NextRequest) {
           role: "model",
           sql: chat.message,
           table: JSON.stringify(table),
-          summary,
+          message: summary,
         });
       } else {
         chatResponseSQLData.push({ ...chat, chatId, role: "model" });
