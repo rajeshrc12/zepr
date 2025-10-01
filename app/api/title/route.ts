@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: "create small title based on given user message",
+          content: "create short title based on given user message",
         },
         { role: "user", content: message },
       ],
