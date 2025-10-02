@@ -19,7 +19,6 @@ const CsvTable = () => {
   const { chatId } = useParams();
   const { data: chat } = useChat(chatId as string);
   const { data: csv } = useCsv(chat?.csvId as string);
-  console.log(csv);
   if (csv?.name)
     return (
       <div className="flex border justify-between items-center text-sm bg-white px-2 rounded-xl shadow">

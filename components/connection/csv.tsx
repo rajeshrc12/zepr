@@ -50,16 +50,14 @@ const Csv = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res.status === 200, res.data?.rows);
 
       if (res.status === 200 && res.data?.rows) {
         toast.success("CSV Uploaded Successfully");
         router.push("/connection");
         return;
       }
-      toast.error("CSV Upload failed");
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error("CSV Upload failed, try another csv");
     }
     setIsLoading(false);
   };

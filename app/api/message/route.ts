@@ -30,8 +30,7 @@ export async function POST(req: NextRequest) {
       });
 
       response = response.choices[0]?.message?.content || "[]";
-    } catch (e) {
-      console.log(e);
+    } catch {
       return NextResponse.json(
         [{ type: "text", message: "Error while process query " }],
         { status: 401 }

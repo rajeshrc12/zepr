@@ -55,11 +55,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(table, { status: 200 });
   } catch (error) {
-    console.error("Error fetching csvs:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch csvs" },
-      { status: 500 }
-    );
+    console.error("Failed to parse csv", error);
+    return NextResponse.json({ error: "Failed to parse csv" }, { status: 401 });
   }
 }
 

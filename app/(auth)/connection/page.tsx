@@ -11,7 +11,6 @@ import { fromNow } from "@/utils/date";
 const ConnectionPage = () => {
   const { data } = useConnections();
 
-  console.log(data);
   return (
     <div className="flex flex-col mx-auto">
       <div className="w-[800px] flex flex-col gap-4 py-4">

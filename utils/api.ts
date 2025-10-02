@@ -20,7 +20,6 @@ export async function createTableFromSchema(
   rows: Record<string, string>[]
 ) {
   // build column definitions
-  console.log({ tableId, columns, rows });
   const colDefs = columns
     .map((col) => {
       const colName = `"${col.name}"`; // safe col name
@@ -56,7 +55,6 @@ export async function createTableFromSchema(
       INSERT INTO csv_${tableId} (${colNames})
       VALUES ${values};
     `;
-    console.log(insertQuery);
     const result = await pool.query(insertQuery, flatValues);
     return result;
   }
