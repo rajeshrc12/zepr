@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useConnections } from "@/hooks/useConnections";
 import { Csv } from "@prisma/client";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -42,21 +42,26 @@ const ChatPage = () => {
     setIsLoading(true);
     setMessage("");
     const response = await axios.post("/api/chat", { message, csvId });
-    await axios.post("/api/title", {
-      chatId: response.data.id,
-      message,
-    });
-    await axios.post("/api/message", {
-      chatId: response.data.id,
-      csvId,
-      message,
-      messages: [],
-    });
-    queryClient.invalidateQueries({ queryKey: ["chats"] });
-    queryClient.invalidateQueries({ queryKey: ["chat"] });
-    queryClient.invalidateQueries({ queryKey: ["user"] });
-
-    router.push(`/chat/${response.data.id}`);
+    try {
+      await axios.post("/api/title", {
+        chatId: response.data.id,
+        message,
+      });
+      await axios.post("/api/message", {
+        chatId: response.data.id,
+        csvId,
+        message,
+        messages: [],
+      });
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      queryClient.invalidateQueries({ queryKey: ["chat"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      router.push(`/chat/${response.data.id}`);
+    } catch (error) {
+      const err = error as AxiosError;
+      toast.error(String(err?.response?.data));
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     return () => {

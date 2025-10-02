@@ -35,9 +35,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(chat, { status: 200 });
   } catch (error) {
     console.error("Error fetching csvs:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch csvs" },
-      { status: 500 }
-    );
+    return NextResponse.json("Error while generating title", {
+      status: 401,
+    });
   }
 }

@@ -134,7 +134,7 @@ export async function generateSummary(
       - Present the results in a well-structured summary using bullet points or other Markdown formatting where appropriate.
       - Include contextual insights, comparisons, or trends to make the explanation more meaningful.
       - Use proper Markdown formatting (headings, bold or numbering)
-      - Give response in short paragrap, dont give long answers.
+      - Give response in short paragraph, dont give long answers.
     `,
       },
       {
