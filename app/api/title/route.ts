@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: "create short title based on given user message",
+          content:
+            "Generate a 3-word title summarizing the given user message.",
         },
         { role: "user", content: message },
       ],

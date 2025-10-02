@@ -14,12 +14,13 @@ const ChatBox = () => {
   const queryClient = useQueryClient();
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const handleMessage = async () => {
-    if (!message.trim()) {
+    if (!message.trim() || isLoading) {
       toast.info("Type your query");
       return;
     }
-
+    setIsLoading((prev) => !prev);
     setMessage("");
     const chatData = queryClient.getQueryData(["chat", chatId]) as Chat & {
       messages: Message[];
@@ -62,12 +63,14 @@ const ChatBox = () => {
       return;
     }
     queryClient.invalidateQueries({ queryKey: ["chat"] });
+    setIsLoading((prev) => !prev);
   };
   return (
     <div className="flex flex-col gap-2">
       <CsvTable />
       <div className="flex w-[600px] border items-center p-4 rounded-xl bg-white shadow">
         <input
+          disabled={isLoading}
           type="text"
           placeholder="What do you want to know ?"
           className="outline-none w-full"
