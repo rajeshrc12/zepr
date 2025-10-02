@@ -17,16 +17,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import axios from "axios";
+import { toast } from "sonner";
+import { ImSpinner2 } from "react-icons/im";
 
 const ConnectionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const { data, isLoading, isError } = useConnections(
+  const { data, isLoading, isError, refetch } = useConnections(
     currentPage,
     itemsPerPage
   );
-
+  const [deleteLoaderId, setDeleteLoaderId] = useState("");
   if (isLoading) return <div className="text-center py-10">Loading...</div>;
 
   if (isError)
@@ -82,7 +85,23 @@ const ConnectionPage = () => {
                     <Badge className="bg-green-500">{csv.status}</Badge>
                   </td>
                   <td className="border-y p-2 cursor-pointer text-red-500">
-                    <FaTrash />
+                    {deleteLoaderId == csv.id ? (
+                      <ImSpinner2 size={20} className="animate-spin" />
+                    ) : (
+                      <FaTrash
+                        onClick={async () => {
+                          setDeleteLoaderId(csv.id);
+                          const response = await axios.delete(
+                            `/api/connection/csv/${csv.id}`
+                          );
+                          if (response.status === 200) {
+                            toast.success("CSV deleted successfully");
+                            refetch();
+                          }
+                          setDeleteLoaderId("");
+                        }}
+                      />
+                    )}
                   </td>
                 </tr>
               ))

@@ -19,3 +19,20 @@ export async function GET(req: Request) {
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+export async function DELETE(req: Request) {
+  const url = new URL(req.url);
+  const csvId = url.pathname.split("/").pop();
+
+  try {
+    const csv = await prisma.csv.update({
+      where: { id: csvId },
+      data: { status: "archived" },
+    });
+
+    // Return the signed URL
+    return Response.json(csv, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching credentials:", error);
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}

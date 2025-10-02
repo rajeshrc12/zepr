@@ -104,6 +104,7 @@ export async function GET(req: Request) {
     const csvs = await prisma.csv.findMany({
       where: {
         userId: { in: [id, "68b40ab6cca7cecedf1741cc"] },
+        status: "ready",
       },
       skip,
       take: limit,
