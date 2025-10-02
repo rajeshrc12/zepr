@@ -38,8 +38,11 @@ const Csv = () => {
       toast.error("Fill all details");
       return;
     }
-    // loader
-    setIsLoading(true);
+    if (file.size > 1 * 1024 * 1024) {
+      toast.error("File size must be less than 1MB");
+      return;
+    }
+    setIsLoading((prev) => !prev);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("data", JSON.stringify({ name, description }));
@@ -59,7 +62,7 @@ const Csv = () => {
     } catch {
       toast.error("CSV upload failed, Try another csv");
     }
-    setIsLoading(false);
+    setIsLoading((prev) => !prev);
   };
   return (
     <AlertDialog>
@@ -104,12 +107,20 @@ const Csv = () => {
           </div>
           <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4">
             <h4 className="font-semibold text-gray-700 mb-2">CSV Guidelines</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
-              <li>Do not add empty lines in the CSV.</li>
-              <li>The first row should contain column names.</li>
+            <ul className="list-disc list-inside space-y-1 text-sm ">
+              <li>
+                File limit is <b>1MB</b>
+              </li>
+              <li>
+                Do not add <b>empty lines</b> in the CSV.
+              </li>
+              <li>
+                The <b>first row</b> should contain column names.
+              </li>
               <li>There should not be any merged cells.</li>
               <li>
-                Each column should have consistent data according to its type.
+                Each column should have<b> consistent data </b>according to its
+                type.
               </li>
             </ul>
           </div>

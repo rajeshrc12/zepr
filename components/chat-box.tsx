@@ -1,6 +1,6 @@
 import { Chat, Message } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
@@ -51,19 +51,20 @@ const ChatBox = () => {
         ],
       };
     });
-
-    const messageResponse = await axios.post("/api/message", {
-      chatId,
-      message,
-      messages: chatData?.messages,
-      csvId: chatData.csvId,
-    });
-    if (messageResponse.status === 401) {
-      toast.error("Error while process query");
-      return;
+    try {
+      await axios.post("/api/message", {
+        chatId,
+        message,
+        messages: chatData?.messages,
+        csvId: chatData.csvId,
+      });
+    } catch (error) {
+      const err = error as AxiosError;
+      toast.error(String(err?.response?.data));
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["chat"] });
+      setIsLoading((prev) => !prev);
     }
-    queryClient.invalidateQueries({ queryKey: ["chat"] });
-    setIsLoading((prev) => !prev);
   };
   return (
     <div className="flex flex-col gap-2">

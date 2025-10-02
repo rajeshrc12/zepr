@@ -31,32 +31,36 @@ export async function POST(req: NextRequest) {
 
       response = response.choices[0]?.message?.content || "[]";
     } catch {
-      return NextResponse.json(
-        [{ type: "text", message: "Error while process query " }],
-        { status: 401 }
-      );
+      return NextResponse.json("Error while generating SQL query", {
+        status: 401,
+      });
     }
     const modelResponse = JSON.parse(response);
     const chatResponseSQLData = [];
 
-    for (const chat of modelResponse) {
-      if (chat.type === "sql") {
-        const table = (await pool.query(chat.message))?.rows;
-        const summary = await generateSummary(message, table);
+    try {
+      for (const chat of modelResponse) {
+        if (chat.type === "sql") {
+          const table = (await pool.query(chat.message))?.rows;
+          const summary = await generateSummary(message, table);
 
-        chatResponseSQLData.push({
-          ...chat,
-          chatId,
-          role: "model",
-          sql: chat.message,
-          table: JSON.stringify(table),
-          message: summary,
-        });
-      } else {
-        chatResponseSQLData.push({ ...chat, chatId, role: "model" });
+          chatResponseSQLData.push({
+            ...chat,
+            chatId,
+            role: "model",
+            sql: chat.message,
+            table: JSON.stringify(table),
+            message: summary,
+          });
+        } else {
+          chatResponseSQLData.push({ ...chat, chatId, role: "model" });
+        }
       }
+    } catch {
+      return NextResponse.json("Error while generating summary", {
+        status: 401,
+      });
     }
-
     const messageResponse = await prisma.message.createMany({
       data: [
         {
@@ -71,10 +75,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(messageResponse, { status: 200 });
   } catch (error) {
-    console.error("Error fetching csvs:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch csvs" },
-      { status: 500 }
-    );
+    console.error("Error while processing request:", error);
+    return NextResponse.json("Error while processing message", { status: 401 });
   }
 }

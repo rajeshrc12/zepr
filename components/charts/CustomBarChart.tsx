@@ -59,7 +59,14 @@ const CustomBarChart = ({ data, xDataKey, yDataKey }: CustomBarChartProps) => {
               },
             }}
           />
-          <Tooltip />
+          <Tooltip
+            formatter={(value, name) => {
+              if (name === yDataKey) {
+                return Number(value).toFixed(2); // Format only Y-axis values
+              }
+              return value;
+            }}
+          />
           <Bar dataKey={yDataKey} fill="#201e1c" />
         </BarChart>
       </ResponsiveContainer>

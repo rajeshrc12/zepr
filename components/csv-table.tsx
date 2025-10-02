@@ -17,37 +17,37 @@ import { Button } from "./ui/button";
 
 const CsvTable = () => {
   const { chatId } = useParams();
-  const { data: chat } = useChat(chatId as string);
+  const { data: chat, isLoading } = useChat(chatId as string);
   const { data: csv } = useCsv(chat?.csvId as string);
-  if (csv?.name)
-    return (
-      <div className="flex border justify-between items-center text-sm bg-white px-2 rounded-xl shadow">
-        <div className="font-semibold flex items-center gap-2">
-          <FaFileCsv />
-          {csv?.name}
-        </div>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant={"ghost"}>
-              <FaEye />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="!max-w-[90vw] !h-[90vh] p-5 m-0">
-            <AlertDialogHeader>
-              <AlertDialogTitle>CSV data</AlertDialogTitle>
-            </AlertDialogHeader>
 
-            <div className="overflow-auto">
-              <DynamicTable data={csv.data} />
-            </div>
-
-            <AlertDialogFooter>
-              <AlertDialogAction>Close</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+  return (
+    <div className="flex border justify-between items-center text-sm bg-white px-2 rounded-xl shadow">
+      <div className="font-semibold flex items-center gap-2">
+        <FaFileCsv />
+        {isLoading ? "Loading..." : csv?.name}
       </div>
-    );
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant={"ghost"}>
+            <FaEye />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="!max-w-[90vw] !h-[90vh] p-5 m-0">
+          <AlertDialogHeader>
+            <AlertDialogTitle>CSV data</AlertDialogTitle>
+          </AlertDialogHeader>
+
+          <div className="overflow-auto">
+            {csv?.data && <DynamicTable data={csv.data} />}
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogAction>Close</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 };
 
 export default CsvTable;
