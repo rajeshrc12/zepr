@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ImSpinner2 } from "react-icons/im";
+import { FaFileCsv } from "react-icons/fa6";
 
 const ChatPage = () => {
   const queryClient = useQueryClient();
@@ -96,6 +97,7 @@ const ChatPage = () => {
                 ) : (
                   data?.data?.map((csv: Csv) => (
                     <SelectItem key={csv.id} value={csv.id}>
+                      <FaFileCsv />
                       {csv.name}
                     </SelectItem>
                   ))

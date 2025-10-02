@@ -6,19 +6,25 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { FaChevronDown } from "react-icons/fa";
+import SignOut from "@/components/sign-out";
+import { auth } from "@/auth";
 
-const Profile = () => {
+const Profile = async () => {
+  const session = await auth();
   return (
     <Popover>
       <PopoverTrigger className="flex items-center gap-2">
+        <div className="text-sm font-bold">
+          {session?.user.name?.split(" ")[0]}
+        </div>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={session?.user.image || ""} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <FaChevronDown color="gray" />
       </PopoverTrigger>
-      <PopoverContent className="w-32">
-        Place content for the popover here.
+      <PopoverContent className="w-30 p-0 flex flex-col justify-center items-center">
+        <SignOut />
       </PopoverContent>
     </Popover>
   );

@@ -13,6 +13,7 @@ export async function findOrCreateUser(email: string, name: string) {
         data: {
           email,
           name,
+          messageLimit: 10,
         },
       });
     }

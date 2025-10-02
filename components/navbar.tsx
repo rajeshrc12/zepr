@@ -2,6 +2,7 @@ import React from "react";
 import Logo from "@/components/logo";
 import { NAVBAR_MENU } from "@/contants/dashboard";
 import ActiveLink from "@/components/active-link";
+import Profile from "@/components/profile";
 
 const Navbar = () => {
   return (
@@ -13,8 +14,7 @@ const Navbar = () => {
         ))}
       </div>
       <div className="flex items-center gap-2">
-        {/* <div className="text-sm">Rajesh</div>
-        <Profile /> */}
+        <Profile />
       </div>
     </div>
   );
