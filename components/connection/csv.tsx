@@ -57,7 +57,7 @@ const Csv = () => {
         return;
       }
     } catch {
-      toast.error("CSV Upload failed, try another csv");
+      toast.error("CSV upload failed, Try another csv");
     }
     setIsLoading(false);
   };
@@ -76,6 +76,7 @@ const Csv = () => {
           <div className="grid w-full items-center gap-3">
             <Label htmlFor="picture">File upload *</Label>
             <Input
+              disabled={isLoading}
               id="picture"
               type="file"
               onChange={handleChange}
@@ -85,6 +86,7 @@ const Csv = () => {
           <div className="grid w-full items-center gap-3">
             <Label htmlFor="name">File Name *</Label>
             <Input
+              disabled={isLoading}
               id="name"
               type="text"
               value={name}
@@ -94,14 +96,26 @@ const Csv = () => {
           <div className="grid w-full items-center gap-3">
             <Label htmlFor="description">File Description *</Label>
             <Textarea
+              disabled={isLoading}
               value={description}
               id={"description"}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
+          <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4">
+            <h4 className="font-semibold text-gray-700 mb-2">CSV Guidelines</h4>
+            <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+              <li>Do not add empty lines in the CSV.</li>
+              <li>The first row should contain column names.</li>
+              <li>There should not be any merged cells.</li>
+              <li>
+                Each column should have consistent data according to its type.
+              </li>
+            </ul>
+          </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={handleSave} disabled={isLoading}>
             {isLoading ? (
               <div className="flex gap-3">

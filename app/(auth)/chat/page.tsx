@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
 import {
   Select,
@@ -20,7 +20,7 @@ import { ImSpinner2 } from "react-icons/im";
 const ChatPage = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { data } = useConnections();
+  const { data, isLoading: csvLoading } = useConnections(1, 20);
   const [message, setMessage] = useState("");
   const [csvId, setCsvId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -50,8 +50,12 @@ const ChatPage = () => {
     queryClient.invalidateQueries({ queryKey: ["chat"] });
 
     router.push(`/chat/${response.data.id}`);
-    setIsLoading(false);
   };
+  useEffect(() => {
+    return () => {
+      setIsLoading(false);
+    };
+  }, []);
   return (
     <div className="bg-gray-100 flex-1 flex flex-col gap-5 justify-center items-center">
       <div className="w-[60%] flex flex-col gap-5">
@@ -83,11 +87,19 @@ const ChatPage = () => {
                 <SelectValue placeholder="Select source" />
               </SelectTrigger>
               <SelectContent>
-                {data?.map((csv: Csv) => (
-                  <SelectItem key={csv.id} value={csv.id}>
-                    {csv.name}
-                  </SelectItem>
-                ))}
+                {csvLoading ? (
+                  "Loading..."
+                ) : data?.data?.length === 0 ? (
+                  <div className="text-sm text-muted-foreground">
+                    No Connection available
+                  </div>
+                ) : (
+                  data?.data?.map((csv: Csv) => (
+                    <SelectItem key={csv.id} value={csv.id}>
+                      {csv.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
             {isLoading ? (

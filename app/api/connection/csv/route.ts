@@ -6,6 +6,7 @@ import { createTableFromSchema, detectPostgresType } from "@/utils/api";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
+  let csvId = null;
   try {
     const {
       user: { id },
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     const csv = await prisma.csv.create({
       data: {
         fileName: file?.name || "",
-        status: "ready",
+        status: "pending",
         name: data.name,
         description: data.description,
         userId: id, // replace with actual user ID
@@ -51,31 +52,73 @@ export async function POST(req: NextRequest) {
       },
       include: { columns: true },
     });
-    const table = await createTableFromSchema(csv.id, csv.columns, rows);
-
+    csvId = csv.id;
+    const table = await createTableFromSchema(csvId, csv.columns, rows);
+    await prisma.csv.update({
+      data: {
+        status: "ready",
+      },
+      where: {
+        id: csvId,
+      },
+    });
     return NextResponse.json(table, { status: 200 });
   } catch (error) {
+    if (csvId) {
+      await prisma.column.deleteMany({
+        where: {
+          csvId,
+        },
+      });
+      await prisma.csv.delete({
+        where: {
+          id: csvId,
+        },
+      });
+    }
+
     console.error("Failed to parse csv", error);
     return NextResponse.json({ error: "Failed to parse csv" }, { status: 401 });
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const {
       user: { id },
     } = (await auth()) as Session;
 
-    // Save to DB
-    const csvs = await prisma.csv.findMany({
+    const url = new URL(req.url);
+    const page = parseInt(url.searchParams.get("page") || "1", 10);
+    const limit = parseInt(url.searchParams.get("limit") || "5", 10);
+    const skip = (page - 1) * limit;
+
+    // Total count for pagination
+    const total = await prisma.csv.count({
       where: {
-        userId: {
-          in: [id, "68b40ab6cca7cecedf1741cc"], // fetch all rows where userId matches any in this array
-        },
+        userId: { in: [id, "68b40ab6cca7cecedf1741cc"] },
       },
     });
 
-    return NextResponse.json(csvs, { status: 200 });
+    // Fetch paginated CSVs
+    const csvs = await prisma.csv.findMany({
+      where: {
+        userId: { in: [id, "68b40ab6cca7cecedf1741cc"] },
+      },
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({
+      data: csvs,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     console.error("Error fetching csvs:", error);
     return NextResponse.json(
