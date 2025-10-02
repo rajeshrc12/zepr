@@ -11,7 +11,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Assuming findOrCreateUser returns the user object with an id
         const dbUser = (await findOrCreateUser(
           user.email!,
-          user.name!
+          user.name!,
+          user.image!
         )) as User;
         // Store the user ID in the user object for JWT callback
         user.id = dbUser.id;
