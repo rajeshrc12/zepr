@@ -15,7 +15,7 @@ const ChatMenu = () => {
   return (
     <div className="w-[250px] overflow-y-auto px-2">
       {isLoading ? (
-        <div className="flex justify-center">
+        <div className="flex justify-center h-[100px]">
           <ImSpinner2 size={20} className="animate-spin" />
         </div>
       ) : (
