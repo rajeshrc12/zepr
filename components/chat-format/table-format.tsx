@@ -26,7 +26,7 @@ const TableFormat: React.FC<TableFormatProps> = ({ dataString }) => {
   if (headers.length === 0) return null;
 
   return (
-    <table className="w-full table-fixed border">
+    <table className="table-fixed border">
       <thead className="bg-gray-100 font-bold">
         <tr>
           {headers.map((header, i) => (
