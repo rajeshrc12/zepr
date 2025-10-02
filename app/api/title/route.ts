@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     } = (await auth()) as Session;
     const { chatId, message } = await req.json();
     const response = await openRouter.chat.completions.create({
-      model: "deepseek/deepseek-chat-v3.1:free",
+      model: "google/gemini-2.5-flash-lite",
       messages: [
         {
           role: "system",

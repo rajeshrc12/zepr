@@ -3,11 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { Csv, Message } from "@prisma/client";
 import { generateSummary, getSystemInstruction } from "@/utils/api";
 import { getPool } from "@/lib/pg";
-import { getOpenRouterClient } from "@/lib/open-router";
 import { Session } from "next-auth";
 import { auth } from "@/auth";
+import { getGeminiClient } from "@/lib/gemini";
+import { Type } from "@google/genai";
 
-const openRouter = getOpenRouterClient();
+const geminiClient = getGeminiClient();
 const pool = getPool();
 export async function POST(req: NextRequest) {
   try {
@@ -16,33 +17,48 @@ export async function POST(req: NextRequest) {
     } = (await auth()) as Session;
 
     const { message, messages, chatId, csvId } = await req.json();
-    const history = messages.slice(-4).map((message: Message) => {
-      if (message.role == "model")
-        return { role: "assistant", content: message.message };
-      return { role: "user", content: message.message };
-    });
 
     const columns = await prisma.column.findMany({ where: { csvId } });
     const csv = (await prisma.csv.findFirst({ where: { id: csvId } })) as Csv;
     const systemInstruction = getSystemInstruction(csv, columns);
-    let response = null;
+    let modelResponse = null;
     try {
-      response = await openRouter.chat.completions.create({
-        model: "x-ai/grok-4-fast:free",
-        messages: [
-          { role: "system", content: systemInstruction },
-          ...history,
-          { role: "user", content: message },
-        ],
+      const geminiChat = geminiClient.chats.create({
+        model: "gemini-2.5-flash",
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                type: {
+                  type: Type.STRING,
+                  enum: ["sql", "text"],
+                },
+                message: {
+                  type: Type.STRING,
+                },
+              },
+              required: ["type", "message"],
+            },
+          },
+        },
+        history: messages.slice(-4).map((m: Message) => ({
+          role: m.role,
+          parts: [{ text: m.message }],
+        })),
       });
-
-      response = response.choices[0]?.message?.content || "[]";
+      const response = await geminiChat.sendMessage({
+        message,
+      });
+      modelResponse = JSON.parse(response?.text || "[]");
     } catch {
       return NextResponse.json("Error while generating SQL query", {
         status: 401,
       });
     }
-    const modelResponse = JSON.parse(response);
     const chatResponseSQLData = [];
 
     try {
