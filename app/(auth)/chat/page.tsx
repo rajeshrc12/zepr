@@ -17,6 +17,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ImSpinner2 } from "react-icons/im";
 import { FaFileCsv } from "react-icons/fa6";
+import { useUser } from "@/hooks/useUser";
+import { Button } from "@/components/ui/button";
+const messageLimit = Number(process.env.NEXT_PUBLIC_MESSAGE_LIMIT);
 
 const ChatPage = () => {
   const queryClient = useQueryClient();
@@ -25,6 +28,8 @@ const ChatPage = () => {
   const [message, setMessage] = useState("");
   const [csvId, setCsvId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { data: user } = useUser();
+
   const handleMessage = async () => {
     if (!message.trim()) {
       toast.info("Type your query");
@@ -49,6 +54,7 @@ const ChatPage = () => {
     });
     queryClient.invalidateQueries({ queryKey: ["chats"] });
     queryClient.invalidateQueries({ queryKey: ["chat"] });
+    queryClient.invalidateQueries({ queryKey: ["user"] });
 
     router.push(`/chat/${response.data.id}`);
   };
@@ -60,68 +66,71 @@ const ChatPage = () => {
   return (
     <div className="bg-gray-100 flex-1 flex flex-col gap-5 justify-center items-center">
       <div className="w-[60%] flex flex-col gap-5">
-        <div className="flex flex-col justify-center items-center gap-5">
-          <Image src={"logo.svg"} alt="" height={50} width={50} />
-          <div className="font-bold">How may I assist you today ?</div>
-        </div>
-        <div className="flex flex-col border p-4 gap-3 rounded-xl bg-white shadow">
-          <input
-            disabled={isLoading}
-            value={message || ""}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleMessage();
-              }
-            }}
-            type="text"
-            placeholder="Ask anything"
-            className="outline-none w-full"
-          />
-          <div className="flex justify-between items-center">
-            <Select
-              value={csvId}
-              onValueChange={(e) => setCsvId(e)}
-              disabled={isLoading}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Select source" />
-              </SelectTrigger>
-              <SelectContent>
-                {csvLoading ? (
-                  "Loading..."
-                ) : data?.data?.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">
-                    No Connection available
-                  </div>
-                ) : (
-                  data?.data?.map((csv: Csv) => (
-                    <SelectItem key={csv.id} value={csv.id}>
-                      <FaFileCsv />
-                      {csv.name}
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
-            {isLoading ? (
-              <ImSpinner2 size={20} className="animate-spin" />
-            ) : (
-              <LuSendHorizontal onClick={handleMessage} />
-            )}
+        {messageLimit === user?.messageLimit ? (
+          <div className="flex flex-col justify-center items-center gap-4 p-6 bg-white rounded-xl shadow-md border border-gray-200">
+            <div className="text-lg font-semibold text-gray-800">
+              You have reached your message limit!
+            </div>
+            <div className="text-sm text-gray-500 text-center">
+              Upgrade your plan to continue exploring and unlock more features.
+            </div>
+            <Button>Upgrade Plan</Button>
           </div>
-        </div>
-        {/* <div className="grid grid-cols-2 gap-2">
-          {new Array(4).fill(0).map((_, i) => (
-            <Button
-              variant={"outline"}
-              className="h-auto whitespace-normal break-words text-left block"
-              key={i}
-            >
-              who are my top 5 user ?
-            </Button>
-          ))}
-        </div> */}
+        ) : (
+          <>
+            <div className="flex flex-col justify-center items-center gap-5">
+              <Image src={"logo.svg"} alt="" height={50} width={50} />
+              <div className="font-bold">How may I assist you today ?</div>
+            </div>
+            <div className="flex flex-col border p-4 gap-3 rounded-xl bg-white shadow">
+              <input
+                disabled={isLoading}
+                value={message || ""}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleMessage();
+                  }
+                }}
+                type="text"
+                placeholder="Ask anything"
+                className="outline-none w-full"
+              />
+              <div className="flex justify-between items-center">
+                <Select
+                  value={csvId}
+                  onValueChange={(e) => setCsvId(e)}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {csvLoading ? (
+                      "Loading..."
+                    ) : data?.data?.length === 0 ? (
+                      <div className="text-sm text-muted-foreground">
+                        No Connection available
+                      </div>
+                    ) : (
+                      data?.data?.map((csv: Csv) => (
+                        <SelectItem key={csv.id} value={csv.id}>
+                          <FaFileCsv />
+                          {csv.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                {isLoading ? (
+                  <ImSpinner2 size={20} className="animate-spin" />
+                ) : (
+                  <LuSendHorizontal onClick={handleMessage} />
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

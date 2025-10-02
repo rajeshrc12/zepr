@@ -4,10 +4,17 @@ import { Csv, Message } from "@prisma/client";
 import { generateSummary, getSystemInstruction } from "@/utils/api";
 import { getPool } from "@/lib/pg";
 import { getOpenRouterClient } from "@/lib/open-router";
+import { Session } from "next-auth";
+import { auth } from "@/auth";
+
 const openRouter = getOpenRouterClient();
 const pool = getPool();
 export async function POST(req: NextRequest) {
   try {
+    const {
+      user: { id },
+    } = (await auth()) as Session;
+
     const { message, messages, chatId, csvId } = await req.json();
     const history = messages.slice(-4).map((message: Message) => {
       if (message.role == "model")
@@ -71,6 +78,14 @@ export async function POST(req: NextRequest) {
         },
         ...chatResponseSQLData,
       ],
+    });
+    await prisma.user.update({
+      where: { id },
+      data: {
+        messageLimit: {
+          increment: 1,
+        },
+      },
     });
 
     return NextResponse.json(messageResponse, { status: 200 });

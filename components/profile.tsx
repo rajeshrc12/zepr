@@ -11,6 +11,7 @@ import { useUser } from "@/hooks/useUser";
 import { Button } from "./ui/button";
 import { signOutAction } from "@/app/actions/sign-out";
 import { Progress } from "./ui/progress";
+const messageLimit = process.env.NEXT_PUBLIC_MESSAGE_LIMIT;
 
 const Profile = () => {
   const { data: user } = useUser();
@@ -43,7 +44,9 @@ const Profile = () => {
           <div className="w-full">
             <p className="text-sm font-medium mb-1">Message Limit</p>
             <div className="flex justify-between text-xs text-muted-foreground mb-1">
-              <span>{user?.messageLimit}/10</span>
+              <span>
+                {user?.messageLimit}/{messageLimit}
+              </span>
               <span>{100 - Number(user?.messageLimit) * 10}% left</span>
             </div>
             <Progress value={Number(user?.messageLimit) * 10} className="h-2" />

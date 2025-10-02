@@ -63,6 +63,7 @@ const ChatBox = () => {
       toast.error(String(err?.response?.data));
     } finally {
       queryClient.invalidateQueries({ queryKey: ["chat"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       setIsLoading((prev) => !prev);
     }
   };
