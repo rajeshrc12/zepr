@@ -38,7 +38,7 @@ const Csv = () => {
       toast.error("Fill all details");
       return;
     }
-    // loader
+
     setIsLoading(true);
     const formData = new FormData();
     formData.append("file", file);
