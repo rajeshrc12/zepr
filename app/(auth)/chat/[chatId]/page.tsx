@@ -25,7 +25,7 @@ const ChatIdPage = () => {
     }
   }, [chat?.messages]);
   return (
-    <div className="flex-1 flex flex-col gap-5 bg-gray-50">
+    <div className="flex-1 flex flex-col gap-5 bg-gray-100">
       <div className="flex-1 overflow-y-auto px-60 pt-5" ref={containerRef}>
         {isLoading && (
           <div className="flex justify-center">
