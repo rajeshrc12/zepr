@@ -41,7 +41,7 @@ const ChatIdPage = () => {
       </div>
       <div className="w-full flex justify-center pb-5">
         {user?.messageLimit === 0 ? (
-          <div>You have reached limit upgrade your plan</div>
+          <div>You have reached limit, add more credits to continue</div>
         ) : (
           <ChatBox />
         )}

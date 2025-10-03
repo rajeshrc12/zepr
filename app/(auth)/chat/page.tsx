@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { ImSpinner2 } from "react-icons/im";
 import { FaFileCsv } from "react-icons/fa6";
 import { useUser } from "@/hooks/useUser";
-import { Button } from "@/components/ui/button";
 
 const ChatPage = () => {
   const queryClient = useQueryClient();
@@ -76,9 +75,8 @@ const ChatPage = () => {
               You have reached your message limit!
             </div>
             <div className="text-sm text-gray-500 text-center">
-              Upgrade your plan to continue exploring and unlock more features.
+              Add more credits to continue exploring and unlock more features.
             </div>
-            <Button>Upgrade Plan</Button>
           </div>
         ) : (
           <>

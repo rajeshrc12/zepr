@@ -3,6 +3,7 @@ import Logo from "@/components/logo";
 import { NAVBAR_MENU } from "@/contants/dashboard";
 import ActiveLink from "@/components/active-link";
 import Profile from "@/components/profile";
+import BuyCredits from "./buy-credits";
 
 const Navbar = () => {
   return (
@@ -14,6 +15,7 @@ const Navbar = () => {
         ))}
       </div>
       <div className="flex items-center gap-2">
+        <BuyCredits />
         <Profile />
       </div>
     </div>
