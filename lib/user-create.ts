@@ -17,7 +17,7 @@ export async function findOrCreateUser(
         data: {
           email,
           name,
-          messageLimit: 0,
+          messageLimit: 10,
           image,
         },
       });

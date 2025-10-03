@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
       where: { id },
       data: {
         messageLimit: {
-          increment: 1,
+          decrement: 1,
         },
       },
     });

@@ -9,7 +9,6 @@ import { Message } from "@prisma/client";
 import { ImSpinner2 } from "react-icons/im";
 import LoaderFormat from "@/components/chat-format/loader-format";
 import { useUser } from "@/hooks/useUser";
-const messageLimit = Number(process.env.NEXT_PUBLIC_MESSAGE_LIMIT);
 
 const ChatIdPage = () => {
   const { chatId } = useParams();
@@ -41,7 +40,7 @@ const ChatIdPage = () => {
         })}
       </div>
       <div className="w-full flex justify-center pb-5">
-        {user?.messageLimit === messageLimit ? (
+        {user?.messageLimit === 0 ? (
           <div>You have reached limit upgrade your plan</div>
         ) : (
           <ChatBox />

@@ -10,9 +10,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { useUser } from "@/hooks/useUser";
 import { Button } from "./ui/button";
 import { signOutAction } from "@/app/actions/sign-out";
-import { Progress } from "./ui/progress";
-const messageLimit = process.env.NEXT_PUBLIC_MESSAGE_LIMIT;
-
+import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 const Profile = () => {
   const { data: user } = useUser();
   if (user)
@@ -28,7 +26,7 @@ const Profile = () => {
 
         <PopoverContent
           align="end"
-          className="w-64 p-4 flex flex-col gap-4 rounded-xl shadow-lg"
+          className="w-54 p-4 flex flex-col gap-4 rounded-xl shadow-lg"
         >
           {/* User Info */}
           <div className="flex items-center gap-3 w-full border-b pb-3">
@@ -40,16 +38,21 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Limit Section */}
-          <div className="w-full">
-            <p className="text-sm font-medium mb-1">Message Limit</p>
-            <div className="flex justify-between text-xs text-muted-foreground mb-1">
-              <span>
-                {user?.messageLimit}/{messageLimit}
-              </span>
-              <span>{100 - Number(user?.messageLimit) * 10}% left</span>
-            </div>
-            <Progress value={Number(user?.messageLimit) * 10} className="h-2" />
+          <div
+            className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full border transition-all duration-200
+          ${
+            user?.messageLimit === 0
+              ? "bg-red-50 text-red-700 border-red-200 shadow-sm"
+              : "bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm"
+          }`}
+          >
+            {user?.messageLimit === 0 ? (
+              <FiXCircle className="w-3 h-3 mr-1.5" />
+            ) : (
+              <FiCheckCircle className="w-3 h-3 mr-1.5" />
+            )}
+            {user?.messageLimit}{" "}
+            {user?.messageLimit === 1 ? "message" : "messages"} left
           </div>
 
           {/* Logout Button */}

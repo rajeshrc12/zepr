@@ -4,6 +4,7 @@ import { Session } from "next-auth";
 import { parse } from "papaparse";
 import { createTableFromSchema, detectPostgresType } from "@/utils/api";
 import { prisma } from "@/lib/prisma";
+const csvUserId = process.env.CSV_USER_ID!;
 
 export async function POST(req: NextRequest) {
   let csvId = null;
@@ -96,14 +97,14 @@ export async function GET(req: Request) {
     // Total count for pagination
     const total = await prisma.csv.count({
       where: {
-        userId: { in: [id, "68b40ab6cca7cecedf1741cc"] },
+        userId: id,
       },
     });
 
     // Fetch paginated CSVs
     const csvs = await prisma.csv.findMany({
       where: {
-        userId: { in: [id, "68b40ab6cca7cecedf1741cc"] },
+        userId: csvUserId ? { in: [csvUserId, id] } : id,
         status: "ready",
       },
       skip,

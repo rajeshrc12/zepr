@@ -12,7 +12,7 @@ model User {
   email        String   @unique
   name         String
   image        String
-  messageLimit Int      @default(0)
+  messageLimit Int      @default(10)
   csvs         Csv[]
   createdAt    DateTime @default(now())
   Chat         Chat[]

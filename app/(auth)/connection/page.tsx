@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import { toast } from "sonner";
 import { ImSpinner2 } from "react-icons/im";
+import { useUser } from "@/hooks/useUser";
 
 const ConnectionPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,6 +30,7 @@ const ConnectionPage = () => {
     currentPage,
     itemsPerPage
   );
+  const { data: user } = useUser();
   const [deleteLoaderId, setDeleteLoaderId] = useState("");
   if (isLoading) return <div className="text-center py-10">Loading...</div>;
 
@@ -48,11 +50,13 @@ const ConnectionPage = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div className="font-bold text-lg">Connections</div>
-          <Link href={"/connection/type"}>
-            <Button>
-              <FaPlus /> Create New
-            </Button>
-          </Link>
+          {user.messageLimit > 0 && (
+            <Link href={"/connection/type"}>
+              <Button>
+                <FaPlus /> Create New
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Table */}
@@ -74,37 +78,39 @@ const ConnectionPage = () => {
                 </td>
               </tr>
             ) : (
-              csvs.map((csv: Csv) => (
-                <tr key={csv.id} className="text-sm hover:bg-gray-50">
-                  <td className="border-y p-2 text-primary font-bold">
-                    {csv.name}
-                  </td>
-                  <td className="border-y p-2">CSV</td>
-                  <td className="border-y p-2">{fromNow(csv.createdAt)}</td>
-                  <td className="border-y p-2">
-                    <Badge className="bg-green-500">{csv.status}</Badge>
-                  </td>
-                  <td className="border-y p-2 cursor-pointer text-red-500">
-                    {deleteLoaderId == csv.id ? (
-                      <ImSpinner2 size={20} className="animate-spin" />
-                    ) : (
-                      <FaTrash
-                        onClick={async () => {
-                          setDeleteLoaderId(csv.id);
-                          const response = await axios.delete(
-                            `/api/connection/csv/${csv.id}`
-                          );
-                          if (response.status === 200) {
-                            toast.success("CSV deleted successfully");
-                            refetch();
-                          }
-                          setDeleteLoaderId("");
-                        }}
-                      />
-                    )}
-                  </td>
-                </tr>
-              ))
+              csvs
+                .filter((csv) => csv.userId == user.id)
+                .map((csv: Csv) => (
+                  <tr key={csv.id} className="text-sm hover:bg-gray-50">
+                    <td className="border-y p-2 text-primary font-bold">
+                      {csv.name}
+                    </td>
+                    <td className="border-y p-2">CSV</td>
+                    <td className="border-y p-2">{fromNow(csv.createdAt)}</td>
+                    <td className="border-y p-2">
+                      <Badge className="bg-green-500">{csv.status}</Badge>
+                    </td>
+                    <td className="border-y p-2 cursor-pointer text-red-500">
+                      {deleteLoaderId == csv.id ? (
+                        <ImSpinner2 size={20} className="animate-spin" />
+                      ) : (
+                        <FaTrash
+                          onClick={async () => {
+                            setDeleteLoaderId(csv.id);
+                            const response = await axios.delete(
+                              `/api/connection/csv/${csv.id}`
+                            );
+                            if (response.status === 200) {
+                              toast.success("CSV deleted successfully");
+                              refetch();
+                            }
+                            setDeleteLoaderId("");
+                          }}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))
             )}
           </tbody>
         </table>
