@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 const ModelFormat = ({ message }: { message: Message }) => {
   const [tool, setTool] = useState("");
   return (
-    <div className="flex text-sm py-2 justify-start">
-      <div className="flex flex-col gap-2 p-2">
+    <div className="flex text-sm py-2 justify-start w-full">
+      <div className="flex flex-col gap-2 p-2 w-full">
         {message.sql ? (
           <div className="flex flex-col gap-3">
             {message.message && (
