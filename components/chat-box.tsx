@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
 import CsvTable from "./csv-table";
 import { toast } from "sonner";
+import { ImSpinner2 } from "react-icons/im";
 
 interface ChatExtended extends Chat {
   messages: Message[];
@@ -84,7 +85,11 @@ const ChatBox = () => {
             }
           }}
         />
-        <LuSendHorizontal onClick={handleMessage} />
+        {isLoading ? (
+          <ImSpinner2 size={20} className="animate-spin" />
+        ) : (
+          <LuSendHorizontal onClick={handleMessage} />
+        )}
       </div>
     </div>
   );
