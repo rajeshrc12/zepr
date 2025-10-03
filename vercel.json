@@ -1,6 +1,3 @@
 {
-  "build": {
-    "env": {},
-    "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi"
-  }
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" != \"main\" ]; then exit 0; fi"
 }
