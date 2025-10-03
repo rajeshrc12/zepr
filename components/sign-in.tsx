@@ -1,6 +1,6 @@
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
-
+import { FcGoogle } from "react-icons/fc";
 export default function SignIn() {
   return (
     <form
@@ -9,7 +9,10 @@ export default function SignIn() {
         await signIn("google", { redirectTo: "/chat" });
       }}
     >
-      <Button className="font-semibold text-md rounded-xl">Sign In</Button>
+      <Button variant={"outline"}>
+        <FcGoogle />
+        Continue with Google
+      </Button>
     </form>
   );
 }

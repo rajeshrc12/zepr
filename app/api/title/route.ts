@@ -12,11 +12,12 @@ export async function POST(req: NextRequest) {
     } = (await auth()) as Session;
     const { chatId, message } = await req.json();
     const response = await openRouter.chat.completions.create({
-      model: "deepseek/deepseek-chat-v3.1:free",
+      model: "google/gemini-2.5-flash-lite",
       messages: [
         {
           role: "system",
-          content: "create short title based on given user message",
+          content:
+            "Generate a 3-word title summarizing the given user message.",
         },
         { role: "user", content: message },
       ],
@@ -34,9 +35,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(chat, { status: 200 });
   } catch (error) {
     console.error("Error fetching csvs:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch csvs" },
-      { status: 500 }
-    );
+    return NextResponse.json("Error while generating title", {
+      status: 401,
+    });
   }
 }

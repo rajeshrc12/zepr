@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 
-export async function findOrCreateUser(email: string, name: string) {
+export async function findOrCreateUser(
+  email: string,
+  name: string,
+  image: string
+) {
   if (!email || !name) return null;
 
   try {
@@ -13,6 +17,8 @@ export async function findOrCreateUser(email: string, name: string) {
         data: {
           email,
           name,
+          messageLimit: 0,
+          image,
         },
       });
     }

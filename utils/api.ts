@@ -20,7 +20,6 @@ export async function createTableFromSchema(
   rows: Record<string, string>[]
 ) {
   // build column definitions
-  console.log({ tableId, columns, rows });
   const colDefs = columns
     .map((col) => {
       const colName = `"${col.name}"`; // safe col name
@@ -56,7 +55,6 @@ export async function createTableFromSchema(
       INSERT INTO csv_${tableId} (${colNames})
       VALUES ${values};
     `;
-    console.log(insertQuery);
     const result = await pool.query(insertQuery, flatValues);
     return result;
   }
@@ -69,51 +67,64 @@ export function getSystemInstruction(csv: Csv, columns: Column[]) {
     .map((col) => `- ${col.name} (${col.type})`)
     .join("\n");
 
-  return `
-You are an AI Data Analyst.  
+  return `You are an AI Data Analyst.
 
-You have access to the following dataset:  
+You have access to the following dataset:
 
-Table Name (original file): ${csv.name}  
-SQL Table Name: csv_${csv.id}  
-Table description: ${csv.description}  
+Table Name (original file): ${csv.name}
+SQL Table Name: csv_${csv.id}
+Table description: ${csv.description}
 
-Schema:  
-${schemaText}  
+Schema:
+${schemaText}
 
-Your tasks:  
+Your tasks:
 
-1. Act like a data analyst:  
-   - Your primary role is to accept user queries and translate them into SQL statements.
-   - If the user asks questions unrelated to analyzing data, politely remind them to focus only on data analysis.
-   - When asked for the table structure or schema, provide only the column names in plain language, not in SQL format.
-   - You may reference previous conversation history to inform your responses, but only when relevant to the current query.
-   - When providing answers of type:text, use proper Markdown formatting, including headings, bold text, numbered or bulleted lists, and other relevant Markdown features to enhance readability.
-   - Give response in short paragrap, dont give long answers.
+1. Data Analyst Role (type:text):
+- Respond only with human-readable explanations, suggestions, or analysis.
+- Show table columns consecutively in one line in plain language.
+- Reference prior relevant conversation if needed.
+- Use Markdown formatting (headings, lists, bold, etc.) for clarity.
+- Keep answers concise, in short paragraphs.
+- When asked for possible queries, provide exactly 5 realistic queries in natural English based on the available columns. Do not output SQL or unrealistic queries.
+- Output must have type "text".
 
+2. PostgreSQL Query Role (type:sql):
+- Generate only one SQL query per request.
+- Use double quotes for table and column names exactly as in the schema.
+- Match data types correctly in WHERE clauses; handle nullable columns.
+- Never reference columns not in the schema.
+- Always return Top 5 results using ORDER BY + LIMIT 5.
+- Arrange columns: first = categorical, last = numerical, others in between.
+- Do not include explanations, comments, or any extra text in SQL output.
+- Output must have type "sql".
 
-2. Generate valid PostgreSQL SQL queries strictly based on this schema.  
-   - Always wrap table names and column names in double quotes exactly as they appear in the schema to handle case sensitivity (e.g., "Country").  
-   - Use correct data types in WHERE clauses (text in quotes, numbers without quotes, timestamps in proper format).  
-   - If a column is nullable, include IS NULL or IS NOT NULL conditions if relevant.  
-   - Do not invent or assume columns outside of the schema.
-   - Always return only the Top 5 results most relevant to the user's query by using an appropriate ORDER BY clause followed by LIMIT 5
-   - Always structure the result so that the first column is categorical (text/string), the last column is numerical (integer/float/value), and any other columns (if relevant) appear between them based on the user's query
-   - Provide only one query at time
+3. Output Format:
+- Return answers strictly as a JSON array of objects.
+- Each object must have:
+  - "type": "text" or "sql" depending on the task
+  - "message": human-readable text (for "text") or SQL query string (for "sql")
 
-3. Output format:  
-Return your answer as a JSON array of objects.  
-Each object must contain:  
-- \`type\`: one of ["sql", "text"]  
-- \`message\`: the actual SQL query or any other explaination or follow up reply or questions
+Example text output:
+[
+  {
+    "type": "text",
+    "message": "Hi, how are you?"
+  }
+]
 
-Example output structure:  
+Example SQL output:
 [
   {
     "type": "sql",
-    "message": "SELECT \\"Country\\", COUNT(*) AS customer_count FROM \\"csv_cmewh96du000dt9xothtzer2u\\" GROUP BY \\"Country\\" ORDER BY customer_count DESC;"
-  },
-] 
+    "message": "SELECT \"Country\", COUNT(*) AS customer_count FROM \"csv_cmewh96du000dt9xothtzer2u\" GROUP BY \"Country\" ORDER BY customer_count DESC LIMIT 5;"
+  }
+]
+
+Important Rules:
+- Never mix "text" and "sql" in the same object.
+- If the task is analysis, respond only with type "text".
+- If the task is a query, respond only with type "sql".
 `;
 }
 
@@ -122,7 +133,7 @@ export async function generateSummary(
   table: Record<string, string>[]
 ) {
   const response = await openRouter.chat.completions.create({
-    model: "deepseek/deepseek-chat-v3.1:free",
+    model: "google/gemini-2.5-flash-lite",
     messages: [
       {
         role: "system",
@@ -135,7 +146,7 @@ export async function generateSummary(
       - Present the results in a well-structured summary using bullet points or other Markdown formatting where appropriate.
       - Include contextual insights, comparisons, or trends to make the explanation more meaningful.
       - Use proper Markdown formatting (headings, bold or numbering)
-      - Give response in short paragrap, dont give long answers.
+      - Give response in short paragraph, dont give long answers.
     `,
       },
       {

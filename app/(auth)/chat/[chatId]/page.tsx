@@ -8,11 +8,13 @@ import { useParams } from "next/navigation";
 import { Message } from "@prisma/client";
 import { ImSpinner2 } from "react-icons/im";
 import LoaderFormat from "@/components/chat-format/loader-format";
+import { useUser } from "@/hooks/useUser";
+const messageLimit = Number(process.env.NEXT_PUBLIC_MESSAGE_LIMIT);
 
 const ChatIdPage = () => {
   const { chatId } = useParams();
   const { data: chat, isLoading } = useChat(chatId as string);
-
+  const { data: user } = useUser();
   // Ref for scrollable container
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -22,12 +24,11 @@ const ChatIdPage = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [chat?.messages]);
-  console.log(chat);
   return (
-    <div className="flex-1 flex flex-col bg-gray-50 gap-5">
-      <div className="flex-1 overflow-y-auto px-20" ref={containerRef}>
+    <div className="flex-1 flex flex-col gap-5 bg-gray-100">
+      <div className="flex-1 overflow-y-auto px-60 pt-5" ref={containerRef}>
         {isLoading && (
-          <div className="flex justify-center py-10">
+          <div className="flex justify-center">
             <ImSpinner2 size={20} className="animate-spin" />
           </div>
         )}
@@ -40,7 +41,11 @@ const ChatIdPage = () => {
         })}
       </div>
       <div className="w-full flex justify-center pb-5">
-        <ChatBox />
+        {user?.messageLimit === messageLimit ? (
+          <div>You have reached limit upgrade your plan</div>
+        ) : (
+          <ChatBox />
+        )}
       </div>
     </div>
   );
