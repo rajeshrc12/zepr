@@ -54,12 +54,24 @@ export default function LandingPage() {
           </div>
           <div>Copyright @ 2025 Zepr.live</div>
           <div className="flex gap-3">
-            <Button className="bg-gray-100">
-              <FaLinkedin color="black" />
-            </Button>
-            <Button className="bg-gray-100">
-              <FaSquareXTwitter color="black" />
-            </Button>
+            <a
+              href="https://linkedin.com/in/rajeshcharhajari"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="bg-gray-100">
+                <FaLinkedin color="black" />
+              </Button>
+            </a>
+            <a
+              href="https://x.com/rajeshwebdev"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="bg-gray-100">
+                <FaSquareXTwitter color="black" />
+              </Button>
+            </a>
           </div>
         </div>
       </div>
