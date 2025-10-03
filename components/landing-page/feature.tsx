@@ -1,6 +1,7 @@
 import { FEATURES } from "@/contants/landing-page";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const Feature = () => {
   return (
@@ -23,10 +24,17 @@ const Feature = () => {
                 <div className="text-stone-600">{feature.description}</div>
               </div>
               <div>
-                <Button>{feature.hrefValue}</Button>
+                <Link href={"/login"}>
+                  <Button>{feature.hrefValue}</Button>
+                </Link>
               </div>
             </div>
-            <div className="col-span-6 border h-[400px] rounded"></div>
+            <div
+              className="col-span-6 border h-[400px] rounded bg-cover shadow-lg"
+              style={{
+                backgroundImage: `url('${feature.videoLink}')`,
+              }}
+            ></div>
           </div>
         )
       )}

@@ -7,6 +7,7 @@ import Navbar from "@/components/landing-page/navbar";
 import Home from "@/components/landing-page/home";
 import Feature from "@/components/landing-page/feature";
 import FAQ from "@/components/landing-page/faq";
+import Link from "next/link";
 
 export default function LandingPage() {
   return (
@@ -32,9 +33,11 @@ export default function LandingPage() {
             Make better data-driven decisions 10x faster with a fraction of the
             cost
           </div>
-          <Button className="text-black" variant={"outline"}>
-            Get started
-          </Button>
+          <Link href={"/login"}>
+            <Button className="text-black" variant={"outline"}>
+              Get started
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -44,7 +47,7 @@ export default function LandingPage() {
             <Image src={"logo.svg"} alt="" height={40} width={40} />
             <div className="font-bold text-2xl">Zepr</div>
           </div>
-          <div>Copyright @ 2025 Zepr.space</div>
+          <div>Copyright @ 2025 Zepr.live</div>
           <div className="flex gap-3">
             <Button className="bg-gray-100">
               <FaLinkedin color="black" />

@@ -21,10 +21,10 @@ export const FEATURES = [
   {
     title: "Connect to your databases or data warehouses",
     description:
-      "Integrate with your databases and data warehouses all-in-one place (Postgres, MySQL, Snowflake, BigQuery, and more).",
-    hrefValue: "All Integration",
-    href: "/integration",
-    videoLink: "",
+      "Integrate with your databases and data warehouses all-in-one place (Postgres, Csv and more).",
+    hrefValue: "Get Started",
+    href: "/login",
+    videoLink: "f1.png",
   },
   {
     title: "Chat with your database, visualize insights, & perform analysis",
@@ -32,15 +32,7 @@ export const FEATURES = [
       "Zepr can write SQL queries and create recommended charts based on your data questions. It also helps your drill down on the analysis.",
     hrefValue: "Get Started",
     href: "/login",
-    videoLink: "",
-  },
-  {
-    title: "Ensure answer accuracy and consistency with built-in data catalog",
-    description:
-      "An automated semantic layer that ensures Zepr answers with correct business logic. Easily manage your data catalog & data dictionary.",
-    hrefValue: "Get Started",
-    href: "/login",
-    videoLink: "",
+    videoLink: "f2.png",
   },
 ];
 
@@ -51,12 +43,8 @@ export const FAQs = [
       "Zepr is built for data team, useful for everyone. Zepr helps data teams organize and label their data so it's ready for LLM ingestion. All organized data products are usable by anyone who has a data question, regardless of their technical skills",
   },
   {
-    question: "Can I self-host Zepr?",
-    answer: "Yes. Contact for self-hosting solution.",
-  },
-  {
     question: "Can I use custom LLMs?",
     answer:
-      "Zepr is currently using OpenAI's GPT-4 Turbo model. We are planning to add LLM configuration feature. Contact for details",
+      "Zepr is currently using Google's Gemini model. We are planning to add LLM configuration feature. Contact for details",
   },
 ];
