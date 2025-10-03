@@ -69,7 +69,7 @@ const ChatBox = () => {
     }
   };
   return (
-    <div className="flex flex-col gap-2 w-full px-60">
+    <div className="flex flex-col gap-2 w-full px-5 md:px-30 lg:px-60">
       <CsvTable />
       <div className="flex border items-center p-4 rounded-xl bg-white shadow">
         <input

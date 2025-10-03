@@ -16,9 +16,9 @@ const Feature = () => {
         }) => (
           <div
             key={feature.title}
-            className="grid grid-cols-12 px-10 items-center"
+            className="grid grid-cols-1 lg:grid-cols-12 px-4 sm:px-6 lg:px-10 items-center w-full max-w-[1400px] mx-auto"
           >
-            <div className="col-span-6 flex flex-col gap-5">
+            <div className="col-span-1 lg:col-span-6 flex flex-col gap-5 order-2 lg:order-1">
               <div className="font-bold text-xl">{feature.title}</div>
               <div>
                 <div className="text-stone-600">{feature.description}</div>
@@ -30,7 +30,7 @@ const Feature = () => {
               </div>
             </div>
             <div
-              className="col-span-6 border h-[400px] rounded bg-cover shadow-lg"
+              className="col-span-1 lg:col-span-6 border h-[300px] lg:h-[400px] rounded bg-cover shadow-lg lg:min-w-0 order-1 lg:order-2"
               style={{
                 backgroundImage: `url('${feature.videoLink}')`,
               }}
