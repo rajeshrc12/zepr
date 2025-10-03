@@ -25,10 +25,10 @@ const ChatIdPage = () => {
     }
   }, [chat?.messages]);
   return (
-    <div className="flex-1 flex flex-col bg-gray-50 gap-5">
-      <div className="flex-1 overflow-y-auto px-20" ref={containerRef}>
+    <div className="flex-1 flex flex-col gap-5 bg-gray-50">
+      <div className="flex-1 overflow-y-auto px-60 pt-5" ref={containerRef}>
         {isLoading && (
-          <div className="flex justify-center py-10">
+          <div className="flex justify-center">
             <ImSpinner2 size={20} className="animate-spin" />
           </div>
         )}

@@ -69,14 +69,14 @@ const ChatBox = () => {
     }
   };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full px-60">
       <CsvTable />
-      <div className="flex w-[600px] border items-center p-4 rounded-xl bg-white shadow">
+      <div className="flex border items-center p-4 rounded-xl bg-white shadow">
         <input
           disabled={isLoading}
           type="text"
           placeholder="What do you want to know ?"
-          className="outline-none w-full"
+          className="outline-none w-full text-sm"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {

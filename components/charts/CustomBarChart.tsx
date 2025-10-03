@@ -25,8 +25,6 @@ const CustomBarChart = ({ data, xDataKey, yDataKey }: CustomBarChartProps) => {
           data={data}
           margin={{
             top: 10,
-            right: 30,
-            left: 20,
             bottom: 10,
           }}
         >
