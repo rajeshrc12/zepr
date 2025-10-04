@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <div className="flex justify-between items-center px-3 py-2 border-b">
       <Logo />
-      <div className="flex gap-5">
+      <div className="hidden md:flex md:gap-5">
         {NAVBAR_MENU.map(({ value, href }: { value: string; href: string }) => (
           <ActiveLink key={value} name={value} href={href} />
         ))}

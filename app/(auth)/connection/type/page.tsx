@@ -7,8 +7,8 @@ import { IoIosArrowBack } from "react-icons/io";
 
 const DataSourceTypePage = () => {
   return (
-    <div className="flex flex-col mx-auto">
-      <div className="w-[800px] flex flex-col gap-8 py-4">
+    <div className="flex flex-col md:mx-auto">
+      <div className="md:w-[800px] flex flex-col gap-8 py-4">
         <div className="flex justify-between items-end">
           <Link href={"/connection"}>
             <Button

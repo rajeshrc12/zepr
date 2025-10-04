@@ -28,7 +28,7 @@ const ChartFormat: React.FC<TableFormatProps> = ({ dataString }) => {
   if (data.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 bg-white p-4 rounded">
       <CustomBarChart data={data} xDataKey={xDataKey} yDataKey={yDataKey} />
     </div>
   );

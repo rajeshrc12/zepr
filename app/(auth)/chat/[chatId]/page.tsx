@@ -37,7 +37,13 @@ const ChatIdPage = () => {
         {chat?.messages?.map((chat: Message) => {
           if (chat.type === "loader") return <LoaderFormat key={chat.id} />;
           else if (chat.role === "user")
-            return <UserFormat key={chat.id} message={chat.message} />;
+            return (
+              <UserFormat
+                key={chat.id}
+                message={chat.message}
+                image={user?.image || ""}
+              />
+            );
           else if (chat.role === "model")
             return <ModelFormat key={chat.id} message={chat} />;
         })}

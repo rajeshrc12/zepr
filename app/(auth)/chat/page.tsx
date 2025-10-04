@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
 import {
@@ -18,6 +17,7 @@ import { toast } from "sonner";
 import { ImSpinner2 } from "react-icons/im";
 import { FaFileCsv } from "react-icons/fa6";
 import { useUser } from "@/hooks/useUser";
+import LogoSVG from "@/components/icons/LogoSVG";
 
 const ChatPage = () => {
   const queryClient = useQueryClient();
@@ -68,7 +68,7 @@ const ChatPage = () => {
   }, []);
   return (
     <div className="bg-gray-100 flex-1 flex flex-col gap-5 justify-center items-center">
-      <div className="w-[60%] flex flex-col gap-5">
+      <div className="w-full px-5 md:w-[60%] flex flex-col gap-5">
         {0 === user?.messageLimit ? (
           <div className="flex flex-col justify-center items-center gap-4 p-6 bg-white rounded-xl shadow-md border border-gray-200">
             <div className="text-lg font-semibold text-gray-800">
@@ -81,7 +81,7 @@ const ChatPage = () => {
         ) : (
           <>
             <div className="flex flex-col justify-center items-center gap-5">
-              <Image src={"logo.svg"} alt="" height={50} width={50} />
+              <LogoSVG height="60" width="60" />
               <div className="font-bold">How may I assist you today ?</div>
             </div>
             <div className="flex flex-col border p-4 gap-3 rounded-xl bg-white shadow">

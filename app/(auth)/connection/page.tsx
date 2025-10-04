@@ -45,8 +45,8 @@ const ConnectionPage = () => {
   const pagination = data?.pagination;
 
   return (
-    <div className="flex flex-col mx-auto">
-      <div className="w-[800px] flex flex-col gap-4 py-4">
+    <div className="flex flex-col md:mx-auto">
+      <div className="md:w-[800px] flex flex-col gap-4 py-4">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div className="font-bold text-lg">Connections</div>
