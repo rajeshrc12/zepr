@@ -47,6 +47,7 @@ export default function CodeBlock({
     highlight();
   }, [code, lang]);
 
+  if (!html) return "Loading...";
   return (
     <div className="rounded-lg overflow-x-auto text-sm leading-relaxed">
       <div

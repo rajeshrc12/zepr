@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
 import { FaLinkedin } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import Navbar from "@/components/landing-page/navbar";
@@ -8,6 +6,7 @@ import Home from "@/components/landing-page/home";
 import Feature from "@/components/landing-page/feature";
 import FAQ from "@/components/landing-page/faq";
 import Link from "next/link";
+import LogoSVG from "@/components/icons/LogoSVG";
 
 export default function LandingPage() {
   return (
@@ -49,7 +48,8 @@ export default function LandingPage() {
       <div className="flex flex-col justify-center items-center">
         <div className="w-full max-w-[900px] border-t flex flex-col gap-5 py-10">
           <div className="flex gap-1 items-center">
-            <Image src={"logo.svg"} alt="" height={40} width={40} />
+            <LogoSVG height="40" width="40" />
+
             <div className="font-bold text-xl sm:text-2xl">Zepr</div>
           </div>
           <div>Copyright @ 2025 Zepr.live</div>
