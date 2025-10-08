@@ -1,3 +1,5 @@
+https://github.com/user-attachments/assets/1d95835a-c823-4c93-a635-a733f5ddffce
+
 ## AI Data Analyst
 
 An AI-powered data analyst platform designed to simplify data exploration for non-technical users.
