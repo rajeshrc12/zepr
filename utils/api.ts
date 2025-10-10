@@ -10,7 +10,6 @@ export function detectPostgresType(value: string): string {
 
   if (isDateString(value)) return "TIMESTAMP";
 
-  // Default fallback
   return "TEXT";
 }
 
