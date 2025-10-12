@@ -5,7 +5,7 @@ import React from "react";
 
 const LoginPage = () => {
   return (
-    <div>
+    <div className="flex justify-center items-center h-screen">
       <Button
         onClick={() => {
           window.location.href = `${BACKEND_URL}/login`;

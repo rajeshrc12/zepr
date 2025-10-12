@@ -11,15 +11,18 @@ const ChatPage = () => {
   if (error) return <div>Error loading user</div>;
   console.log(user, error);
   return (
-    <div>
+    <div className="flex flex-col">
+      <div className="flex justify-between p-5">
+        <div>Zepr</div>
+        <Button
+          onClick={() => {
+            window.location.href = `${BACKEND_URL}/logout`;
+          }}
+        >
+          Logout
+        </Button>
+      </div>
       <div>Welcome,{user?.name}</div>
-      <Button
-        onClick={() => {
-          window.location.href = `${BACKEND_URL}/logout`;
-        }}
-      >
-        Logout
-      </Button>
     </div>
   );
 };
