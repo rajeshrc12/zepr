@@ -36,21 +36,28 @@ export default function ChatLayout({
       {/* Sidebar (Desktop + Mobile) */}
       <div
         className={`
-          fixed md:static top-[57px] left-0 h-full w-64 bg-white border-r 
-          transform transition-transform duration-300 z-40
-          ${menuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-        `}
+    fixed md:static top-[57px] left-0 h-[calc(100vh-57px)] w-64 bg-white border-r 
+    transform transition-transform duration-300 z-40
+    ${menuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+  `}
       >
-        <Link href={"/chat"}>
-          <Button
-            variant={"outline"}
-            className="flex justify-between m-2 w-[93%]"
-          >
-            New Chat
-            <BiSolidEdit />
-          </Button>
-        </Link>
-        <ChatMenu />
+        {/* Sticky header */}
+        <div className="sticky top-0 z-10">
+          <Link href={"/chat"}>
+            <Button
+              variant="outline"
+              className="flex justify-between m-2 w-[93%]"
+            >
+              New Chat
+              <BiSolidEdit />
+            </Button>
+          </Link>
+        </div>
+
+        {/* Scrollable chat list */}
+        <div className="overflow-y-auto h-[calc(100%-57px)]">
+          <ChatMenu />
+        </div>
       </div>
 
       {children}
