@@ -1,56 +1,49 @@
 "use client";
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { SquarePen, Cable, MessagesSquare, PanelLeft } from "lucide-react";
 import Logo from "@/components/icons/logo";
 import { cn } from "@/lib/utils";
+import { PanelLeft } from "lucide-react";
+import { MENU } from "@/constants/sidebar";
+import ActiveLink from "./active-link";
 
 const Sidebar = () => {
-  const [hideMenu, setHideMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
   return (
     <div
       className={cn(
-        "flex flex-col py-4 gap-5",
-        hideMenu ? "w-[45px]" : "w-[200px]"
+        showMenu ? "hidden md:w-[200px]" : "w-[45px]",
+        "flex flex-col py-4 gap-5"
       )}
     >
       <div className="flex gap-2 px-4 items-center">
         <div>
           <Logo size="25" />
         </div>
-        {!hideMenu && <div className="text-black font-bold text-xl">Zepr</div>}
+        {showMenu && (
+          <div className="text-black font-bold text-xl hidden md:block">
+            Zepr
+          </div>
+        )}
       </div>
       <div className="flex-1 flex flex-col px-2 gap-1">
-        <Button
-          variant={"ghost"}
-          className="hover:bg-gray-200 flex justify-start items-center gap-2 h-7 p-0 m-0 w-full text-black"
-        >
-          <SquarePen color="gray" />
-          {!hideMenu && <span>New chat</span>}
-        </Button>
-        <Button
-          variant={"ghost"}
-          className="hover:bg-gray-200 flex justify-start items-center gap-2 h-7 p-0 m-0 w-full text-black"
-        >
-          <Cable color="gray" />
-          {!hideMenu && <span>Connection</span>}
-        </Button>
-        <Button
-          variant={"ghost"}
-          className="hover:bg-gray-200 flex justify-start items-center gap-2 h-7 p-0 m-0 w-full text-black"
-        >
-          <MessagesSquare color="gray" />
-          {!hideMenu && <span>Chat history</span>}
-        </Button>
+        {MENU.map((m) => (
+          <ActiveLink
+            showMenu={showMenu}
+            key={m.value}
+            value={m.value}
+            Icon={m.icon}
+            href={m.href}
+          />
+        ))}
       </div>
       <div className="flex justify-between items-center pl-5">
-        {!hideMenu && <div>Rajesh Charhajari</div>}
-        <div className="border rounded-md p-1">
+        {showMenu && <div className="hidden md:block">Rajesh Charhajari</div>}
+        <div className="border rounded-md p-1 hidden md:block">
           <PanelLeft
             size={15}
             color="gray"
             className="cursor-pointer"
-            onClick={() => setHideMenu(!hideMenu)}
+            onClick={() => setShowMenu(!showMenu)}
           />
         </div>
       </div>
