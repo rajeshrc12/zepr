@@ -19,7 +19,7 @@ const ChatPage = () => {
               placeholder="Ask a question..."
             />
             <div className="flex justify-between">
-              <div></div>
+              <div>netflix.csv</div>
               <SendHorizontal size={20} color="gray" />
             </div>
           </div>
