@@ -42,7 +42,6 @@ const Sidebar = () => {
           <PanelLeft
             size={15}
             color="gray"
-            className="cursor-pointer"
             onClick={() => setShowMenu(!showMenu)}
           />
         </div>

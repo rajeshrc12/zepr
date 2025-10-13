@@ -117,6 +117,10 @@ button {
   font-size: inherit;
 }
 
+.lucide {
+  cursor: pointer;
+}
+
 /* For Chrome, Edge, Safari */
 ::-webkit-scrollbar {
   width: 4px; /* scrollbar width */
