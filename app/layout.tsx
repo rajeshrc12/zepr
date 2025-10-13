@@ -3,6 +3,7 @@ import "./globals.css";
 import QueryProvider from "@/providers/query-provider";
 
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased`}>
         <QueryProvider>
           <main>{children}</main>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>
