@@ -5,9 +5,12 @@ import { cn } from "@/lib/utils";
 import { PanelLeft } from "lucide-react";
 import { MENU } from "@/constants/sidebar";
 import ActiveLink from "./active-link";
+import { useUser } from "@/hooks/useUser";
 
 const Sidebar = () => {
   const [showMenu, setShowMenu] = useState(true);
+  const { data: user } = useUser();
+  console.log(user);
   return (
     <div
       className={cn(
@@ -37,7 +40,7 @@ const Sidebar = () => {
         ))}
       </div>
       <div className="flex justify-between items-center pl-5">
-        {showMenu && <div className="hidden md:block">Rajesh Charhajari</div>}
+        {showMenu && <div className="hidden md:block">{user?.name}</div>}
         <div className="border rounded-md p-1 hidden md:block">
           <PanelLeft
             size={15}
