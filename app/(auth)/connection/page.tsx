@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/table";
 import Csv from "@/components/form/csv";
 import { useCsvs } from "@/hooks/useCsvs";
-import { CsvFile } from "@/types/csv";
 import { LoaderCircle } from "lucide-react";
+import { CsvType } from "@/types/db";
 
 const ConnectionPage = () => {
   const { data: csvs, isLoading } = useCsvs();
@@ -45,7 +45,7 @@ const ConnectionPage = () => {
                 </TableCell>
               </TableRow>
             ) : csvs && csvs.length > 0 ? (
-              csvs.map((csv: CsvFile) => (
+              csvs.map((csv: CsvType) => (
                 <TableRow key={csv.id}>
                   <TableCell className="py-2">{csv.id}</TableCell>
                   <TableCell className="py-2 font-medium">{csv.name}</TableCell>

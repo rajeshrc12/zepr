@@ -1,11 +1,15 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { useChat } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
+import { MessageType } from "@/types/db";
 import { SendHorizontal, X } from "lucide-react";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
 const ChatIdPage = () => {
-  const [rightPanel, setRightPanel] = useState(true);
+  const { chatId } = useParams();
+  const [rightPanel, setRightPanel] = useState(false);
+  const { data: chat } = useChat(chatId as string);
   return (
     <div className="flex h-full">
       <div
@@ -21,21 +25,22 @@ const ChatIdPage = () => {
             !rightPanel && "px-[25%]"
           )}
         >
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex flex-col">
-              <div>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Corrupti unde facere, numquam exercitationem, mollitia cumque
-                beatae nobis voluptas iure facilis quidem impedit dolorem. Totam
-                laudantium quis necessitatibus eum pariatur reiciendis. {i + 1}
-              </div>
-              <div>
-                <Button variant={"outline"} onClick={() => setRightPanel(true)}>
-                  Show report
-                </Button>
-              </div>
-            </div>
-          ))}
+          {chat?.messages?.map((message: MessageType) => {
+            if (message.type === "ai")
+              return (
+                <div key={message.id} className="flex flex-col items-start">
+                  <div>{message.content}</div>
+                </div>
+              );
+            if (message.type === "human")
+              return (
+                <div key={message.id} className="flex flex-col items-end">
+                  <div className="border bg-white p-1 rounded">
+                    {message.content}
+                  </div>
+                </div>
+              );
+          })}
         </div>
 
         <div
@@ -50,7 +55,7 @@ const ChatIdPage = () => {
             placeholder="Ask a question"
           />
           <div className="flex justify-between">
-            <div className="border p-1 rounded-lg text-xs">Netflix.csv</div>
+            <div className="border p-1 rounded-lg text-xs">{chat?.csv_id}</div>
             <SendHorizontal size={20} color="gray" />
           </div>
         </div>

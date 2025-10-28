@@ -1,6 +1,6 @@
 "use client";
+import ChatBox from "@/components/chat-box";
 import { useUser } from "@/hooks/useUser";
-import { SendHorizontal } from "lucide-react";
 import React from "react";
 
 const ChatPage = () => {
@@ -15,17 +15,7 @@ const ChatPage = () => {
             <div>Good afternoon, {user?.name}</div>
             <div className="text-[#575859]">How can I help you today?</div>
           </div>
-          <div className="flex flex-col bg-white shadow border rounded-md p-4 gap-4">
-            <input
-              type="text"
-              className="outline-none placeholder:font-medium"
-              placeholder="Ask a question..."
-            />
-            <div className="flex justify-between">
-              <div>netflix.csv</div>
-              <SendHorizontal size={20} color="gray" />
-            </div>
-          </div>
+          <ChatBox />
         </div>
       </div>
     </div>
