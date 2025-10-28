@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Table,
@@ -8,66 +9,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Csv from "@/components/form/csv";
-
-const programmingLanguages = [
-  {
-    id: "1",
-    name: "JavaScript",
-    releaseYear: "1995",
-    developer: "Brendan Eich",
-    typing: "Dynamic",
-    paradigm: "Multi-paradigm",
-    extension: ".js",
-    latestVersion: "ES2021",
-    popularity: "High",
-  },
-  {
-    id: "2",
-    name: "Python",
-    releaseYear: "1991",
-    developer: "Guido van Rossum",
-    typing: "Dynamic",
-    paradigm: "Multi-paradigm",
-    extension: ".py",
-    latestVersion: "3.10",
-    popularity: "High",
-  },
-  {
-    id: "3",
-    name: "Java",
-    releaseYear: "1995",
-    developer: "James Gosling",
-    typing: "Static",
-    paradigm: "Object-oriented",
-    extension: ".java",
-    latestVersion: "17",
-    popularity: "High",
-  },
-  {
-    id: "4",
-    name: "C++",
-    releaseYear: "1985",
-    developer: "Bjarne Stroustrup",
-    typing: "Static",
-    paradigm: "Multi-paradigm",
-    extension: ".cpp",
-    latestVersion: "C++20",
-    popularity: "High",
-  },
-  {
-    id: "5",
-    name: "Ruby",
-    releaseYear: "1995",
-    developer: "Yukihiro Matsumoto",
-    typing: "Dynamic",
-    paradigm: "Multi-paradigm",
-    extension: ".rb",
-    latestVersion: "3.0",
-    popularity: "Low",
-  },
-];
+import { useCsvs } from "@/hooks/useCsvs";
+import { CsvFile } from "@/types/csv";
+import { LoaderCircle } from "lucide-react";
 
 const ConnectionPage = () => {
+  const { data: csvs, isLoading } = useCsvs();
   return (
     <div className="flex flex-col">
       <div className="flex justify-between p-5">
@@ -78,31 +25,50 @@ const ConnectionPage = () => {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
+              <TableHead className="h-9 py-2">ID</TableHead>
               <TableHead className="h-9 py-2">Name</TableHead>
-              <TableHead className="h-9 py-2">Release Year</TableHead>
-              <TableHead className="h-9 py-2">Developer</TableHead>
-              <TableHead className="h-9 py-2">Typing</TableHead>
-              <TableHead className="h-9 py-2">Paradigm</TableHead>
-              <TableHead className="h-9 py-2">Extension</TableHead>
-              <TableHead className="h-9 py-2">Latest Version</TableHead>
-              <TableHead className="h-9 py-2">Popularity</TableHead>
+              <TableHead className="h-9 py-2">Description</TableHead>
+              <TableHead className="h-9 py-2">File Name</TableHead>
+              <TableHead className="h-9 py-2">Created At</TableHead>
+              <TableHead className="h-9 py-2">Columns Count</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {programmingLanguages.map((language) => (
-              <TableRow key={language.id}>
-                <TableCell className="py-2 font-medium">
-                  {language.name}
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="py-8 text-center">
+                  <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                    <LoaderCircle className="h-6 w-6 animate-spin" />
+                    <span>Loading CSVs...</span>
+                  </div>
                 </TableCell>
-                <TableCell className="py-2">{language.releaseYear}</TableCell>
-                <TableCell className="py-2">{language.developer}</TableCell>
-                <TableCell className="py-2">{language.typing}</TableCell>
-                <TableCell className="py-2">{language.paradigm}</TableCell>
-                <TableCell className="py-2">{language.extension}</TableCell>
-                <TableCell className="py-2">{language.latestVersion}</TableCell>
-                <TableCell className="py-2">{language.popularity}</TableCell>
               </TableRow>
-            ))}
+            ) : csvs && csvs.length > 0 ? (
+              csvs.map((csv: CsvFile) => (
+                <TableRow key={csv.id}>
+                  <TableCell className="py-2">{csv.id}</TableCell>
+                  <TableCell className="py-2 font-medium">{csv.name}</TableCell>
+                  <TableCell className="py-2">{csv.description}</TableCell>
+                  <TableCell className="py-2">{csv.file_name}</TableCell>
+                  <TableCell className="py-2">
+                    {new Date(csv.created_at).toLocaleString()}
+                  </TableCell>
+                  <TableCell className="py-2">
+                    {csv.columns ? csv.columns.length : 0}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-4 text-muted-foreground"
+                >
+                  No CSV data found
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import api from "@/lib/api";
+import { useCsvs } from "@/hooks/useCsvs";
 
 const Csv = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -24,7 +25,7 @@ const Csv = () => {
   const [description, setDescription] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const { refetch } = useCsvs();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     setFile(selectedFile);
@@ -46,18 +47,18 @@ const Csv = () => {
     formData.append("data", JSON.stringify({ name, description }));
 
     try {
-      const res = await axios.post("/connection/csv", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const res = await api.post("/csv", formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
       });
-
-      if (res.status === 200 && res.data?.rows) {
+      console.log(res);
+      if (res.status === 200) {
         toast.success("CSV Uploaded Successfully");
         setOpen(false);
         setFile(null);
         setName("");
         setDescription("");
+        refetch();
       }
     } catch {
       toast.error("CSV upload failed, Try another csv");
