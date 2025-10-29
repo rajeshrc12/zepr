@@ -1,15 +1,23 @@
 "use client";
+import ChatBoxId from "@/components/chat-box-id";
 import { useChat } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
 import { MessageType } from "@/types/db";
-import { SendHorizontal, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const ChatIdPage = () => {
   const { chatId } = useParams();
   const [rightPanel, setRightPanel] = useState(false);
   const { data: chat } = useChat(chatId as string);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (containerRef.current && chat?.messages) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [chat?.messages]);
   return (
     <div className="flex h-full">
       <div
@@ -24,15 +32,16 @@ const ChatIdPage = () => {
             "flex-1 overflow-y-auto p-2 flex flex-col gap-2 ",
             !rightPanel && "px-[25%]"
           )}
+          ref={containerRef}
         >
           {chat?.messages?.map((message: MessageType) => {
-            if (message.type === "ai")
+            if (message.type == "ai")
               return (
                 <div key={message.id} className="flex flex-col items-start">
                   <div>{message.content}</div>
                 </div>
               );
-            if (message.type === "human")
+            if (message.type == "human")
               return (
                 <div key={message.id} className="flex flex-col items-end">
                   <div className="border bg-white p-1 rounded">
@@ -45,19 +54,11 @@ const ChatIdPage = () => {
 
         <div
           className={cn(
-            "border p-2 rounded-xl m-2 bg-white flex flex-col gap-3",
+            "border p-2 rounded-xl m-2 bg-white",
             !rightPanel && "mx-[25%]"
           )}
         >
-          <input
-            type="text"
-            className="outline-none"
-            placeholder="Ask a question"
-          />
-          <div className="flex justify-between">
-            <div className="border p-1 rounded-lg text-xs">{chat?.csv_id}</div>
-            <SendHorizontal size={20} color="gray" />
-          </div>
+          <ChatBoxId csv={chat?.csv} chatId={chatId as string} />
         </div>
       </div>
 

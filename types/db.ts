@@ -12,7 +12,7 @@ export interface ChatType {
   csv_id: number;
   user_id: number;
   created_at: string;
-  messages?: MessageType[]; // optional if you load related messages
+  messages: MessageType[]; // optional if you load related messages
 }
 // types/csv.ts
 
