@@ -1,6 +1,6 @@
 import React from "react";
 import { EChart } from "@kbox-labs/react-echarts";
-
+import { format } from "echarts"; // 👈 import echarts core
 type ChartData = {
   data: Record<string, string | number>[];
   xAxis: string;
@@ -31,7 +31,15 @@ const BarChart = ({ data, xAxis, yAxis }: ChartData) => {
           type: "category",
           data: xData,
           axisLabel: {
-            rotate: 30,
+            interval: 0, // show all labels
+            formatter: (value: string) => {
+              return format.truncateText(
+                value,
+                80, // max width in pixels (tweak as needed)
+                "12px sans-serif",
+                "…" // ellipsis
+              );
+            },
           },
         }}
         yAxis={{

@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from "react";
 const ChatIdPage = () => {
   const { chatId } = useParams();
   const [rightPanel, setRightPanel] = useState(false);
-  const { data: chat } = useChat(chatId as string);
+  const { data: chat, isLoading: isChatLoading } = useChat(chatId as string);
   const [graphData, setGraphData] = useState<GraphDataType>(GRAPH_DATA);
   const [graphDataStatus, setGraphDataStatus] = useState("");
 
@@ -48,48 +48,56 @@ const ChatIdPage = () => {
           )}
           ref={containerRef}
         >
-          {chat?.messages?.map((message: MessageType) => {
-            if (message.type == "ai")
-              return (
-                <div key={message.id} className="flex flex-col items-start">
-                  <SummaryFormat message={message.content || message.summary} />
-                  {message.sql && (
-                    <Button
-                      variant={"outline"}
-                      onClick={() => {
-                        setRightPanel(true);
-                        setGraphData({
-                          query_analyzer: { query: "" },
-                          normal_query: {
-                            content: message.content || message.summary,
-                          },
-                          analysis_query: { sql: message.sql },
-                          generate_table: { table: message.table },
-                          generate_chart: {
-                            chart: {
-                              type: message.chart.type,
-                              x_axis: message.chart.x_axis,
-                              y_axis: message.chart.y_axis,
+          {isChatLoading ? (
+            <div className="flex justify-center">
+              <LoaderCircle size={15} className="animate-spin" />
+            </div>
+          ) : (
+            chat?.messages?.map((message: MessageType) => {
+              if (message.type == "ai")
+                return (
+                  <div key={message.id} className="flex flex-col items-start">
+                    <SummaryFormat
+                      message={message.content || message.summary}
+                    />
+                    {message.sql && (
+                      <Button
+                        variant={"outline"}
+                        onClick={() => {
+                          setRightPanel(true);
+                          setGraphData({
+                            query_analyzer: { query: "" },
+                            normal_query: {
+                              content: message.content || message.summary,
                             },
-                          },
-                          generate_summary: { summary: message.summary },
-                        });
-                      }}
-                    >
-                      Show report
-                    </Button>
-                  )}
-                </div>
-              );
-            if (message.type == "human")
-              return (
-                <div key={message.id} className="flex flex-col items-end">
-                  <div className="border bg-white p-1 rounded">
-                    {message.content}
+                            analysis_query: { sql: message.sql },
+                            generate_table: { table: message.table },
+                            generate_chart: {
+                              chart: {
+                                type: message.chart.type,
+                                x_axis: message.chart.x_axis,
+                                y_axis: message.chart.y_axis,
+                              },
+                            },
+                            generate_summary: { summary: message.summary },
+                          });
+                        }}
+                      >
+                        Show report
+                      </Button>
+                    )}
                   </div>
-                </div>
-              );
-          })}
+                );
+              if (message.type == "human")
+                return (
+                  <div key={message.id} className="flex flex-col items-end">
+                    <div className="border bg-white p-1 rounded">
+                      {message.content}
+                    </div>
+                  </div>
+                );
+            })
+          )}
           {graphDataStatus && (
             <LoaderCircle size={15} className="animate-spin" />
           )}
