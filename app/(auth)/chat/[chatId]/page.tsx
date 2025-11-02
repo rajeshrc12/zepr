@@ -1,9 +1,13 @@
 "use client";
 import ChatBoxId from "@/components/chat-box-id";
+import RightPanel from "@/components/right-panel";
+import SummaryFormat from "@/components/summary-format";
+import { Button } from "@/components/ui/button";
+import { GRAPH_DATA, GraphDataType } from "@/constants/graph";
 import { useChat } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
 import { MessageType } from "@/types/db";
-import { X } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -11,6 +15,9 @@ const ChatIdPage = () => {
   const { chatId } = useParams();
   const [rightPanel, setRightPanel] = useState(false);
   const { data: chat } = useChat(chatId as string);
+  const [graphData, setGraphData] = useState<GraphDataType>(GRAPH_DATA);
+  const [graphDataStatus, setGraphDataStatus] = useState("");
+
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -18,6 +25,13 @@ const ChatIdPage = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [chat?.messages]);
+
+  useEffect(() => {
+    if (!rightPanel && graphData.query_analyzer.query === "analysis") {
+      setRightPanel(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [graphData]);
   return (
     <div className="flex h-full">
       <div
@@ -38,7 +52,33 @@ const ChatIdPage = () => {
             if (message.type == "ai")
               return (
                 <div key={message.id} className="flex flex-col items-start">
-                  <div>{message.content}</div>
+                  <SummaryFormat message={message.content || message.summary} />
+                  {message.sql && (
+                    <Button
+                      variant={"outline"}
+                      onClick={() => {
+                        setRightPanel(true);
+                        setGraphData({
+                          query_analyzer: { query: "" },
+                          normal_query: {
+                            content: message.content || message.summary,
+                          },
+                          analysis_query: { sql: message.sql },
+                          generate_table: { table: message.table },
+                          generate_chart: {
+                            chart: {
+                              type: message.chart.type,
+                              x_axis: message.chart.x_axis,
+                              y_axis: message.chart.y_axis,
+                            },
+                          },
+                          generate_summary: { summary: message.summary },
+                        });
+                      }}
+                    >
+                      Show report
+                    </Button>
+                  )}
                 </div>
               );
             if (message.type == "human")
@@ -50,30 +90,27 @@ const ChatIdPage = () => {
                 </div>
               );
           })}
+          {graphDataStatus && (
+            <LoaderCircle size={15} className="animate-spin" />
+          )}
         </div>
-
         <div
           className={cn(
             "border p-2 rounded-xl m-2 bg-white",
             !rightPanel && "mx-[25%]"
           )}
         >
-          <ChatBoxId csv={chat?.csv} chatId={chatId as string} />
+          <ChatBoxId
+            csv={chat?.csv}
+            chatId={chatId as string}
+            setGraphData={setGraphData}
+            setGraphDataStatus={setGraphDataStatus}
+          />
         </div>
       </div>
 
       {rightPanel && (
-        <div className="flex-1 flex flex-col bg-white rounded-r p-2">
-          <div className="flex justify-between">
-            <div>Title</div>
-            <X size={15} onClick={() => setRightPanel(false)} />
-          </div>
-          <div className="overflow-y-auto">
-            {Array.from({ length: 40 }).map((_, i) => (
-              <div key={i}>hi {i + 1}</div>
-            ))}
-          </div>
-        </div>
+        <RightPanel graphData={graphData} setRightPanel={setRightPanel} />
       )}
     </div>
   );

@@ -3,10 +3,20 @@ import { LoaderCircle, SendHorizontal } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChatType, CsvType } from "@/types/db";
 import { toast } from "sonner";
-import api from "@/lib/api";
 import { AxiosError } from "axios";
+import { GRAPH_DATA, GraphDataType } from "@/constants/graph";
 
-const ChatBoxId = ({ chatId, csv }: { chatId: string; csv: CsvType }) => {
+const ChatBoxId = ({
+  chatId,
+  csv,
+  setGraphData,
+  setGraphDataStatus,
+}: {
+  chatId: string;
+  csv: CsvType;
+  setGraphData: React.Dispatch<React.SetStateAction<GraphDataType>>;
+  setGraphDataStatus: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +25,7 @@ const ChatBoxId = ({ chatId, csv }: { chatId: string; csv: CsvType }) => {
       toast.info("Type your query");
       return;
     }
+    setGraphData(GRAPH_DATA);
     setIsLoading((prev) => !prev);
     setMessage(() => "");
     console.log(chatId);
@@ -35,18 +46,51 @@ const ChatBoxId = ({ chatId, csv }: { chatId: string; csv: CsvType }) => {
       };
     });
     try {
-      const messages = await api.post("/message", {
+      // ✅ Encode params for GET
+      const params = new URLSearchParams({
         chat_id: chatId,
         content: message,
-        csv,
+        csv: JSON.stringify(csv),
       });
-      console.log(messages.data);
+
+      const url = `http://localhost:8000/message/stream?${params.toString()}`;
+      const evtSource = new EventSource(url);
+
+      evtSource.onopen = () => {
+        setGraphDataStatus("start");
+        console.log("Connected to SSE stream");
+      };
+
+      evtSource.onmessage = (event) => {
+        setGraphDataStatus("fetching");
+
+        if (event.data === "[DONE]") {
+          evtSource.close();
+          queryClient.invalidateQueries({ queryKey: ["chat", chatId] });
+          setGraphDataStatus("");
+          setIsLoading(false);
+          return;
+        }
+
+        try {
+          const parsed = JSON.parse(event.data);
+          setGraphData((prev) => ({ ...prev, ...parsed }));
+          console.log("New chunk:", parsed);
+          // optionally update UI incrementally
+        } catch (err) {
+          console.error("Parse error:", err);
+        }
+      };
+
+      evtSource.onerror = (err) => {
+        console.error("SSE error:", err);
+        evtSource.close();
+        setIsLoading(false);
+      };
     } catch (error) {
       const err = error as AxiosError;
       toast.error(String(err?.response?.data));
     } finally {
-      queryClient.invalidateQueries({ queryKey: ["chat"] });
-      queryClient.invalidateQueries({ queryKey: ["user"] });
       setIsLoading((prev) => !prev);
     }
   };

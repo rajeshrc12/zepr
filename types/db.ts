@@ -1,6 +1,16 @@
+export interface ChartType {
+  type: string;
+  x_axis: string;
+  y_axis: string;
+}
+
 export interface MessageType {
   id: number;
   content: string;
+  sql: string;
+  table: [];
+  chart: ChartType;
+  summary: string;
   type: string; // e.g., "user" | "assistant" | "system" if you use message roles
   chat_id: number;
   created_at: string; // ISO datetime string (e.g. "2025-10-28T15:42:00Z")
