@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type TableProps = {
   data: Record<string, string>[];
@@ -11,40 +19,49 @@ const DynamicTable: React.FC<TableProps> = ({ data }) => {
   const headers = Object.keys(data[0]);
 
   return (
-    <table className="min-w-full divide-y divide-gray-200 table-fixed">
-      <thead className="bg-gray-50 sticky top-0">
-        <tr>
-          {headers.map((header) => (
-            <th
-              key={header}
-              className="px-4 py-2 text-left text-sm font-bold uppercase tracking-wider w-48"
-            >
-              {header}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {data.map((row, index) => (
-          <tr
-            key={index}
-            className={
-              index % 2 === 0 ? "bg-white" : "bg-gray-50 hover:bg-gray-100"
-            }
-          >
+    <div className="overflow-auto rounded-md border bg-background mx-2">
+      <Table>
+        <TableHeader className="sticky top-0 bg-muted/50 z-10">
+          <TableRow>
             {headers.map((header) => (
-              <td
+              <TableHead
                 key={header}
-                className="px-4 py-2 text-sm text-gray-700 truncate whitespace-nowrap"
-                title={row[header]} // show full text on hover
+                className="h-9 py-2 text-left font-bold uppercase tracking-wider w-48"
               >
-                {row[header]}
-              </td>
+                {header}
+              </TableHead>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {data && data.length > 0 ? (
+            data.map((row, index) => (
+              <TableRow key={index} className={"bg-background"}>
+                {headers.map((header) => (
+                  <TableCell
+                    key={header}
+                    className="px-4 py-2 text-sm text-muted-foreground truncate whitespace-nowrap"
+                    title={row[header]}
+                  >
+                    {row[header]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={headers.length}
+                className="text-center py-4 text-muted-foreground"
+              >
+                No data found
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

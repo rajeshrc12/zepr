@@ -37,7 +37,7 @@ const Csv = () => {
       toast.error("Fill all details");
       return;
     }
-    if (file.size > 1 * 1024 * 1024) {
+    if (file.size > 5 * 1024 * 1024) {
       toast.error("File size must be less than 1MB");
       return;
     }

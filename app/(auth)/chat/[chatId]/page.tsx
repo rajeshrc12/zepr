@@ -7,7 +7,7 @@ import { GRAPH_DATA, GraphDataType } from "@/constants/graph";
 import { useChat } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
 import { MessageType } from "@/types/db";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, NotebookText } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -56,7 +56,10 @@ const ChatIdPage = () => {
             chat?.messages?.map((message: MessageType) => {
               if (message.type == "ai")
                 return (
-                  <div key={message.id} className="flex flex-col items-start">
+                  <div
+                    key={message.id}
+                    className="flex flex-col items-start gap-2"
+                  >
                     <SummaryFormat
                       message={message.content || message.summary}
                     />
@@ -83,7 +86,7 @@ const ChatIdPage = () => {
                           });
                         }}
                       >
-                        Show report
+                        <NotebookText /> Show Analysis
                       </Button>
                     )}
                   </div>
