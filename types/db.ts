@@ -1,4 +1,4 @@
-export interface ChartType {
+export interface ChartConfigType {
   type: string;
   x_axis: string;
   y_axis: string;
@@ -9,7 +9,7 @@ export interface MessageType {
   content: string;
   sql: string;
   table: [];
-  chart: ChartType;
+  chart: ChartConfigType;
   summary: string;
   type: string; // e.g., "user" | "assistant" | "system" if you use message roles
   chat_id: number;
@@ -23,6 +23,7 @@ export interface ChatType {
   user_id: number;
   created_at: string;
   messages: MessageType[]; // optional if you load related messages
+  csv: CsvType;
 }
 // types/csv.ts
 
@@ -40,4 +41,15 @@ export interface CsvType {
   user_id: number;
   created_at: string;
   columns?: ColumnType[];
+}
+
+export interface ChartType {
+  id: number;
+  name: string;
+  sql: string;
+  table: [];
+  config: ChartConfigType;
+  summary: string;
+  user_id: string;
+  created_at: string; // ISO datetime string (e.g. "2025-10-28T15:42:00Z")
 }

@@ -50,6 +50,7 @@ const BarChart = ({ data, xAxis, yAxis }: ChartData) => {
             name: yAxis,
             data: yData,
             type: "bar",
+            colorBy: "data", // ✅ each bar gets different color
             itemStyle: {
               borderRadius: [4, 4, 0, 0],
             },

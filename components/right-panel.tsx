@@ -1,10 +1,12 @@
 import { GraphDataType } from "@/constants/graph";
-import { Save, X } from "lucide-react";
-import React from "react";
+import { LoaderCircle, Save, X } from "lucide-react";
+import React, { useState } from "react";
 import CodeBlock from "@/components/code-block";
 import DynamicTable from "@/components/dynamic-table";
 import ChartIndex from "@/components/charts";
 import { Button } from "./ui/button";
+import api from "@/lib/api";
+import { toast } from "sonner";
 
 const RightPanel = ({
   graphData,
@@ -13,6 +15,27 @@ const RightPanel = ({
   graphData: GraphDataType;
   setRightPanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const [loading, setLoading] = useState(false);
+  const saveChart = async () => {
+    try {
+      setLoading(true);
+
+      const chart = await api.post("/chart", {
+        name: "new chart",
+        sql: graphData.analysis_query.sql,
+        table: graphData.generate_table.table,
+        config: graphData.generate_chart.chart,
+        summary: graphData.generate_summary.summary,
+      });
+      if (chart.status === 200) {
+        toast.success("Chart saved");
+      }
+    } catch {
+      toast.error("Chart saving failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex-1 flex flex-col bg-white rounded-r-lg shadow-md p-4">
       {/* Header */}
@@ -55,8 +78,12 @@ const RightPanel = ({
           <section>
             <h3 className="font-semibold text-gray-700 mb-2 border-b pb-1 flex justify-between items-center">
               Chart
-              <Button className="p-0 m-0">
-                <Save />
+              <Button className="p-0 m-0" onClick={saveChart}>
+                {loading ? (
+                  <LoaderCircle size={15} className="animate-spin" />
+                ) : (
+                  <Save />
+                )}
               </Button>
             </h3>
             <div className="p-2 rounded-md">
