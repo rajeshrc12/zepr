@@ -14,7 +14,7 @@ const BarChart = ({ data, xAxis, yAxis }: ChartData) => {
     return (
       <EChart
         style={{
-          height: "400px",
+          height: "100%",
           width: "100%",
         }}
         tooltip={{
