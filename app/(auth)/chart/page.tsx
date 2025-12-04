@@ -18,7 +18,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import ChartIndex from "@/components/charts";
 
@@ -89,7 +88,6 @@ const ChatHistoryPage = () => {
         </Table>
       </div>
       <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogTrigger asChild></AlertDialogTrigger>
         <AlertDialogContent className="!max-w-[700px]">
           <AlertDialogHeader>
             <AlertDialogTitle>{chartData?.name}</AlertDialogTitle>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
@@ -10,23 +10,30 @@ import {
   WidthProvider,
   Responsive as ResponsiveGridLayout,
 } from "react-grid-layout";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const GridLayout = WidthProvider(ResponsiveGridLayout);
 const DashboardIdPage = () => {
   const { data: charts, isLoading } = useCharts();
-
-  // Create default layout dynamically based on number of charts
+  const [open, setOpen] = useState(false);
   const layout = useMemo(() => {
     if (!charts || !charts?.length) return [];
     return charts.map((chart: ChartType, i: number) => ({
       i: chart.id.toString(),
-      x: (i % 2) * 6, // 2 charts per row
+      x: (i % 2) * 6,
       y: Math.floor(i / 2) * 4,
-      w: 6, // width units (out of 12)
-      h: 4, // height units
+      w: 5,
+      h: 5,
     }));
   }, [charts]);
-
   return (
     <div className="p-2 h-full flex flex-col gap-2">
       {/* Header */}
@@ -35,6 +42,7 @@ const DashboardIdPage = () => {
           <div className="text-2xl font-bold">Dashboard title</div>
           <div className="text-sm text-gray-500">Dashboard description</div>
         </div>
+        <Button>Add Chart</Button>
       </div>
 
       {/* Chart Grid */}
@@ -82,6 +90,18 @@ const DashboardIdPage = () => {
           </GridLayout>
         )}
       </div>
+
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle></AlertDialogTitle>
+          </AlertDialogHeader>
+          <div></div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

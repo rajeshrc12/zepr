@@ -25,7 +25,24 @@ export interface ChatType {
   messages: MessageType[]; // optional if you load related messages
   csv: CsvType;
 }
-// types/csv.ts
+
+export interface DashboardStructureType {
+  id: string;
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
+
+export interface DashboardType {
+  id: number;
+  name: string;
+  description: string;
+  user_id: number;
+  created_at: string;
+  structure: DashboardStructureType[]; // optional if you load related messages
+  csv: CsvType;
+}
 
 export interface ColumnType {
   id: number;
