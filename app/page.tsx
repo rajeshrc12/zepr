@@ -1,80 +1,65 @@
-import { Button } from "@/components/ui/button";
-import { FaLinkedin } from "react-icons/fa";
-import { FaSquareXTwitter } from "react-icons/fa6";
-import Navbar from "@/components/landing-page/navbar";
-import Home from "@/components/landing-page/home";
-import Feature from "@/components/landing-page/feature";
-import FAQ from "@/components/landing-page/faq";
-import Link from "next/link";
-import LogoSVG from "@/components/icons/LogoSVG";
+import Image from "next/image";
 
-export default function LandingPage() {
+export default function Home() {
   return (
-    <div className="flex flex-col max-w-[1400px] mx-auto gap-8 md:gap-38 px-4 sm:px-6 lg:px-8">
-      <div>
-        <Navbar />
-        <Home />
-      </div>
-
-      <div className="flex flex-col justify-center items-center gap-6 md:gap-10">
-        <div className="bg-gray-50 rounded-2xl px-3 py-2 border text-sm font-semibold">
-          How it works
-        </div>
-        <div className="font-bold text-2xl sm:text-3xl md:text-4xl flex flex-col justify-center items-center text-center">
-          <div>Make data analysis self-service</div>
-        </div>
-      </div>
-
-      <Feature />
-      <FAQ />
-
-      <div className="flex flex-col justify-center items-center gap-5">
-        <div className="text-white rounded-4xl w-full max-w-[900px] py-10 md:py-20 bg-black flex flex-col justify-center items-center gap-5 px-6 sm:px-8">
-          <div className="font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center">
-            Talk to your data today
-          </div>
-          <div className="text-sm text-muted-foreground font-bold text-center">
-            Make better data-driven decisions 10x faster with a fraction of the
-            cost
-          </div>
-          <Link href={"/login"}>
-            <Button className="text-black" variant={"outline"}>
-              Get started
-            </Button>
-          </Link>
-        </div>
-      </div>
-
-      <div className="flex flex-col justify-center items-center">
-        <div className="w-full max-w-[900px] border-t flex flex-col gap-5 py-10">
-          <div className="flex gap-1 items-center">
-            <LogoSVG height="40" width="40" />
-
-            <div className="font-bold text-xl sm:text-2xl">Zepr</div>
-          </div>
-          <div>Copyright @ 2025 Zepr.live</div>
-          <div className="flex gap-3">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <Image
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={100}
+          height={20}
+          priority
+        />
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            To get started, edit the page.tsx file.
+          </h1>
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to{" "}
             <a
-              href="https://linkedin.com/in/rajeshcharhajari"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
             >
-              <Button className="bg-gray-100">
-                <FaLinkedin color="black" />
-              </Button>
-            </a>
+              Templates
+            </a>{" "}
+            or the{" "}
             <a
-              href="https://x.com/rajeshwebdev"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
             >
-              <Button className="bg-gray-100">
-                <FaSquareXTwitter color="black" />
-              </Button>
-            </a>
-          </div>
+              Learning
+            </a>{" "}
+            center.
+          </p>
         </div>
-      </div>
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={16}
+              height={16}
+            />
+            Deploy Now
+          </a>
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
+          </a>
+        </div>
+      </main>
     </div>
   );
 }
