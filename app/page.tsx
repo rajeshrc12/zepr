@@ -1,3 +1,9 @@
+import Login from "@/components/login";
+
 export default function Home() {
-  return <div>Zepr</div>;
+  return (
+    <div>
+      <Login />
+    </div>
+  );
 }

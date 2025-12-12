@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "@/providers/query-provider";
 
-const geistSans = Inter({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--inter-font",
   weight: ["400", "500", "600", "700"],
@@ -20,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} antialiased`}>{children}</body>
+      <QueryProvider>
+        <body className={`${inter.variable} antialiased`}>{children}</body>
+      </QueryProvider>
     </html>
   );
 }

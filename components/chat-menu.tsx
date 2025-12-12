@@ -2,6 +2,7 @@
 import { ChevronRight, MessageSquare } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import Link from "next/link";
 const chats = [
   { id: "1", name: "Netflix Analysis" },
   { id: "2", name: "Amazon Analysis" },
@@ -25,13 +26,15 @@ const ChatMenu = () => {
       {open && (
         <div className="flex flex-col text-[#64748B]">
           {chats.map((chat) => (
-            <Button
-              variant={"ghost"}
-              key={chat.id}
-              className="flex justify-start text-xs h-6 font-normal"
-            >
-              {chat.name}
-            </Button>
+            <Link key={chat.id} href={`/chat/${chat.id}`}>
+              <Button
+                variant={"ghost"}
+                key={chat.id}
+                className="flex justify-start text-xs h-6 font-normal"
+              >
+                {chat.name}
+              </Button>
+            </Link>
           ))}
         </div>
       )}

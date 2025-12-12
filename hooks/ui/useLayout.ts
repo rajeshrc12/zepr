@@ -8,7 +8,7 @@ interface LayoutState {
 
 export const useLayout = create<LayoutState>()((set) => ({
   left: true,
-  right: true,
+  right: false,
 
   setLayout: (layout) =>
     set((state) => ({

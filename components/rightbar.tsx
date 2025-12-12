@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayout } from "@/hooks/useLayout";
+import { useLayout } from "@/hooks/ui/useLayout";
 
 const Rightbar = () => {
   const { right } = useLayout((state) => state);
