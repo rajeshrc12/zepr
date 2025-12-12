@@ -1,7 +1,8 @@
 "use client";
+import ChatInput from "@/components/chat-input";
 import { Button } from "@/components/ui/button";
 import { useLayout } from "@/hooks/ui/useLayout";
-import { ArrowUp, PanelRight, Paperclip } from "lucide-react";
+import { PanelRight } from "lucide-react";
 
 const ChatPage = () => {
   const { right, setLayout } = useLayout((state) => state);
@@ -16,21 +17,7 @@ const ChatPage = () => {
         <div className="text-3xl font-semibold text-[#404040]">
           What do you want to analyze today?
         </div>
-        <div className="border shadow rounded-xl p-4 flex flex-col gap-4 w-[70%]">
-          <input
-            type="text"
-            className="outline-none"
-            placeholder="Type query here"
-          />
-          <div className="flex justify-between items-center">
-            <Button size={"sm"} variant={"ghost"} className="h-7 w-7">
-              <Paperclip />
-            </Button>
-            <Button size={"sm"} className="rounded-full h-7 w-7">
-              <ArrowUp />
-            </Button>
-          </div>
-        </div>
+        <ChatInput />
       </div>
     </div>
   );
