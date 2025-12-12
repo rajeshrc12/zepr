@@ -57,6 +57,7 @@ const FilesPage = () => {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Description</TableHead>
+              <TableHead>Columns</TableHead>
               <TableHead>Created At</TableHead>
             </TableRow>
           </TableHeader>
@@ -65,7 +66,8 @@ const FilesPage = () => {
               <TableRow key={csv.id}>
                 <TableCell className="font-medium">{csv.name}</TableCell>
                 <TableCell>{csv.description}</TableCell>
-                <TableCell className="text-right">{csv.created_at}</TableCell>
+                <TableCell>{csv.columns?.length}</TableCell>
+                <TableCell>{csv.created_at}</TableCell>
               </TableRow>
             ))}
           </TableBody>

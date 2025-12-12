@@ -10,10 +10,23 @@ import { Paperclip } from "lucide-react";
 import { useCsvs } from "@/hooks/api/useCsvs";
 import { CsvType } from "@/types/db";
 import { useState } from "react";
+import api from "@/lib/api";
+import { useRouter } from "next/navigation";
 const ChatInput = () => {
+  const router = useRouter();
   const { data: csvs } = useCsvs();
   const [selectedCsv, setSelectCsv] = useState<CsvType | null>(null);
+  const [message, setMessage] = useState("");
   console.log(selectedCsv);
+  const handleMessage = async () => {
+    const chat = await api.post("/chat", {
+      csv_id: selectedCsv?.id,
+      message,
+    });
+    setMessage("");
+    router.push(`chat/${chat.data.id}`);
+    console.log(chat);
+  };
   return (
     <div className="border shadow rounded-xl p-3 flex flex-col gap-4 w-[70%]">
       <div className="w-full flex flex-col gap-2">
@@ -43,9 +56,16 @@ const ChatInput = () => {
         )}
 
         <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           type="text"
           className="outline-none w-full"
           placeholder="Type query here"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleMessage();
+            }
+          }}
         />
       </div>
       <div className="flex justify-between items-center">
@@ -70,7 +90,11 @@ const ChatInput = () => {
             </div>
           </PopoverContent>
         </Popover>
-        <Button size={"sm"} className="rounded-full h-7 w-7">
+        <Button
+          onClick={handleMessage}
+          size={"sm"}
+          className="rounded-full h-7 w-7"
+        >
           <ArrowUp />
         </Button>
       </div>
