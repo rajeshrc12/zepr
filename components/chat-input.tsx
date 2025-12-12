@@ -12,6 +12,7 @@ import { CsvType } from "@/types/db";
 import { useState } from "react";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
+import CsvCard from "./csv-card";
 const ChatInput = () => {
   const router = useRouter();
   const { data: csvs } = useCsvs();
@@ -31,28 +32,7 @@ const ChatInput = () => {
     <div className="border shadow rounded-xl p-3 flex flex-col gap-4 w-[70%]">
       <div className="w-full flex flex-col gap-2">
         {selectedCsv?.name && (
-          <div className="relative w-50">
-            <button
-              onClick={() => setSelectCsv(null)}
-              className="absolute right-1 top-1 p-0.5"
-            >
-              <X className="w-3 h-3 hover:text-red-800" />
-            </button>
-
-            <Button
-              className="border w-full flex justify-start gap-2 text-left"
-              variant="ghost"
-            >
-              <Sheet color="green" />
-
-              <span className="flex flex-col overflow-hidden text-xs">
-                <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                  {selectedCsv.name}
-                </span>
-                <span className="text-muted-foreground">Spreadsheet</span>
-              </span>
-            </Button>
-          </div>
+          <CsvCard csv={selectedCsv} onCancel={() => setSelectCsv(null)} />
         )}
 
         <input

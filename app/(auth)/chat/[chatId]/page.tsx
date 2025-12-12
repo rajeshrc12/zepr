@@ -7,6 +7,8 @@ import { Loader } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useRef } from "react";
+import CsvCard from "@/components/csv-card";
+import PythonEditor from "@/components/python-editor";
 
 const ChatIdPage = () => {
   const { chatId } = useParams();
@@ -37,6 +39,8 @@ const ChatIdPage = () => {
         className="flex-1 flex flex-col overflow-y-auto py-5"
       >
         <div className="w-[75%] mx-auto text-sm flex flex-col gap-4">
+          <CsvCard csv={chat.csv} onCancel={null} />
+
           {chat.messages.map((message: MessageType) => {
             if (message.type == "human")
               return (
@@ -62,7 +66,10 @@ const ChatIdPage = () => {
                     </Avatar>
                     <div>Zepr</div>
                   </div>
-                  <div>{message.content}</div>
+                  <PythonEditor
+                    value={message.content}
+                    id={String(message.id)}
+                  />
                 </div>
               );
             if (message.type == "loading")
@@ -86,7 +93,11 @@ const ChatIdPage = () => {
         </div>
       </div>
       <div className="w-[75%] mx-auto py-2">
-        <ChatIdInput />
+        <ChatIdInput
+          csvId={chat?.csv?.id}
+          csvColumns={chat?.csv?.columns}
+          csvName={chat.csv.name}
+        />
       </div>
     </div>
   );

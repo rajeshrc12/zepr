@@ -9,7 +9,15 @@ import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChatType } from "@/types/db";
 
-const ChatIdInput = () => {
+const ChatIdInput = ({
+  csvId,
+  csvColumns,
+  csvName,
+}: {
+  csvId: string;
+  csvColumns: string[];
+  csvName: string;
+}) => {
   const { chatId } = useParams();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
@@ -38,9 +46,13 @@ const ChatIdInput = () => {
         ],
       };
     });
+
     const response = await api.post("/message", {
       content: message,
       chat_id: Number(chatId),
+      csv_id: Number(csvId),
+      csv_columns: csvColumns,
+      csv_name: csvName,
     });
     if (response.status == 200) {
       setLoading(false);
@@ -55,7 +67,7 @@ const ChatIdInput = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           type="text"
-          className="outline-none w-full"
+          className="outline-none w-full text-sm"
           placeholder="Type query here"
           onKeyDown={(e) => {
             if (e.key === "Enter") {

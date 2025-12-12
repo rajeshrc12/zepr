@@ -3,12 +3,11 @@ import { ChevronRight, MessageSquare } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import Link from "next/link";
-const chats = [
-  { id: "1", name: "Netflix Analysis" },
-  { id: "2", name: "Amazon Analysis" },
-];
+import { useChats } from "@/hooks/api/useChats";
+import { ChatType } from "@/types/db";
 
 const ChatMenu = () => {
+  const { data: chats } = useChats();
   const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col">
@@ -25,7 +24,7 @@ const ChatMenu = () => {
       </Button>
       {open && (
         <div className="flex flex-col text-[#64748B]">
-          {chats.map((chat) => (
+          {chats?.slice(0, 5)?.map((chat: ChatType) => (
             <Link key={chat.id} href={`/chat/${chat.id}`}>
               <Button
                 variant={"ghost"}
