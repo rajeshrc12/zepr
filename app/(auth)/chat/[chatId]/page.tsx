@@ -9,6 +9,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useRef } from "react";
 import CsvCard from "@/components/csv-card";
 import PythonEditor from "@/components/python-editor";
+import Image from "next/image";
+import DynamicTable from "@/components/dynamic-table";
+import MdxPreview from "@/components/mdx-preview";
+interface DynamicTableProps {
+  image: string;
+  text: Record<string, string>[];
+}
 
 const ChatIdPage = () => {
   const { chatId } = useParams();
@@ -20,7 +27,7 @@ const ChatIdPage = () => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [chat?.messages]);
-
+  console.log(chat?.messages);
   if (!chat || !user || isLoading)
     return (
       <div className="w-full justify-center flex">
@@ -55,23 +62,57 @@ const ChatIdPage = () => {
                   <div className="pl-1">{message.content}</div>
                 </div>
               );
-            if (message.type == "ai")
-              return (
-                <div key={message.id} className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="w-6 h-6">
-                      <AvatarImage src="logo.png" />
+            if (message.type == "ai") {
+              if (message.content)
+                return (
+                  <div key={message.id} className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-6 h-6">
+                          <AvatarImage src="logo.png" />
 
-                      <AvatarFallback>Z</AvatarFallback>
-                    </Avatar>
-                    <div>Zepr</div>
+                          <AvatarFallback>Z</AvatarFallback>
+                        </Avatar>
+                        <div>Zepr</div>
+                      </div>
+                    </div>
+                    {JSON.parse(message.sql)?.length > 0 ? (
+                      <div className="flex flex-col gap-2">
+                        <PythonEditor
+                          value={message.content}
+                          id={String(message.id)}
+                        />
+                        {JSON.parse(message.sql)?.map(
+                          (i: DynamicTableProps, index: number) => {
+                            if (Object.keys(i).includes("image"))
+                              return (
+                                <Image
+                                  key={index}
+                                  src={`data:image/png;base64,${i["image"]}`}
+                                  alt=""
+                                  width={600}
+                                  height={400}
+                                />
+                              );
+                            else {
+                              return (
+                                <div key={index}>
+                                  <DynamicTable data={i["text"]} />
+                                </div>
+                              );
+                            }
+                          }
+                        )}
+                      </div>
+                    ) : (
+                      <div>{message.content}</div>
+                    )}
+                    {message.summary && (
+                      <MdxPreview content={message.summary} />
+                    )}
                   </div>
-                  <PythonEditor
-                    value={message.content}
-                    id={String(message.id)}
-                  />
-                </div>
-              );
+                );
+            }
             if (message.type == "loading")
               return (
                 <div key={message.id} className="flex flex-col gap-2">

@@ -15,7 +15,9 @@ const PythonEditor = ({ value, id }: { value: string; id: string }) => {
       width="100%"
       style={{
         borderRadius: "10px",
-        overflow: "hidden",
+      }}
+      setOptions={{
+        showPrintMargin: false,
       }}
     />
   );
